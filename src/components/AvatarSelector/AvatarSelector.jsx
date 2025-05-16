@@ -9,20 +9,32 @@ import panahKiri from "../img/panahKiri.png";
 import panahKanan from "../img/panahKanan.png";
 
 const AvatarSelector = ({ selectedAvatar, onPrevClick, onNextClick }) => {
+  const avatars = [
+    babiImage,
+    kucingImage,
+    kucingHeadsetImage,
+    tupaiImage,
+    kelinciImage,
+    beruangImage,
+  ];
+
   return (
     <div className="flex items-center justify-center gap-5">
       <img
+        id="prev-avatar"
         src={panahKiri}
         alt="Previous Avatar"
         onClick={onPrevClick}
         className="w-[50px] cursor-pointer transition-transform duration-200 ease-in-out hover:scale-125"
       />
       <img
+        id="avatar"
         src={selectedAvatar}
         alt="Avatar"
         className="w-[120px] h-auto"
       />
       <img
+        id="next-avatar"
         src={panahKanan}
         alt="Next Avatar"
         onClick={onNextClick}

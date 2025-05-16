@@ -1,3 +1,4 @@
+import "./TopBar.css";
 const TopBar = ({ greeting, time, money }) => {
   const commonBg = "bg-[rgba(34,139,34,0.3)] rounded-xl";
 

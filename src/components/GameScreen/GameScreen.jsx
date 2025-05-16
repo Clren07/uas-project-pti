@@ -13,8 +13,6 @@ import City from "../img/City.png";
 
 const GameScreen = ({ playerData, returnToHome }) => {
   const locationRefs = useRef({});
-  const playerRef = useRef(null);
-  const gameAreaRef = useRef(null);
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -35,6 +33,9 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [showLocationWindow, setShowLocationWindow] = useState(false);
 
+  const playerRef = useRef(null);
+  const gameAreaRef = useRef(null);
+
   const maxStatus = 500;
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -46,7 +47,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
       width: 330,
       height: 260,
       image: Mountain,
-      collisionArea: { width: 130, height: 50 },
+      collisionArea: { width: 130, height: 130 },
     },
     {
       name: "The Temple",
@@ -132,6 +133,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   // Update greeting
   useEffect(() => {
     const { hours } = gameTime;
+
     if (hours >= 5 && hours < 12) setGreeting("Good Morning");
     else if (hours < 15) setGreeting("Good Noon");
     else if (hours < 18) setGreeting("Good Afternoon");
@@ -153,21 +155,22 @@ const GameScreen = ({ playerData, returnToHome }) => {
     return () => clearInterval(statusTimer);
   }, []);
 
-  const movePlayer = (dx, dy) => {
+  const movePlayer = (x, y) => {
+    if (!playerRef.current || !gameAreaRef.current) return;
+
     const player = playerRef.current;
     const gameArea = gameAreaRef.current;
-    if (!player || !gameArea) return;
-
+    
     const currentX = parseInt(player.style.left) || 0;
     const currentY = parseInt(player.style.top) || 0;
 
-    const newX = Math.max(0, Math.min(gameArea.offsetWidth - player.offsetWidth, currentX + dx));
-    const newY = Math.max(0, Math.min(gameArea.offsetHeight - player.offsetHeight, currentY + dy));
+    const newX = Math.max(0, Math.min(gameArea.offsetWidth - player.offsetWidth, currentX + x));
+    const newY = Math.max(0, Math.min(gameArea.offsetHeight - player.offsetHeight, currentY + y));
 
     player.style.left = `${newX}px`;
     player.style.top = `${newY}px`;
 
-    checkCollision();
+    checkCollision(newX, newY);
   };
 
   const checkCollision = () => {
@@ -175,39 +178,48 @@ const GameScreen = ({ playerData, returnToHome }) => {
     if (!player) return;
 
     const playerRect = player.getBoundingClientRect();
-    let overlapped = null;
+    let overlappingLocation = null;
 
-    locations.forEach((loc) => {
-      const el = locationRefs.current[loc.name];
-      if (!el) return;
+    locations.forEach((location) => {
+      const locElement = locationRefs.current[location.name];
+      if (!locElement || !location.collisionArea) return;
 
-      const rect = el.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const width = loc.collisionArea?.width || 100;
-      const height = loc.collisionArea?.height || 100;
+      const locRect = locElement.getBoundingClientRect();
 
-      const area = {
-        left: centerX - width / 2,
-        right: centerX + width / 2,
-        top: centerY - height / 2,
-        bottom: centerY + height / 2,
+      // Hitung area tengah untuk collision
+      const centerX = locRect.left + locRect.width / 2;
+      const centerY = locRect.top + locRect.height / 2;
+      const collisionWidth = location.collisionArea.width;
+      const collisionHeight = location.collisionArea.height;
+
+      // Buat rect untuk area tengah
+      const centerRect = {
+        left: centerX - collisionWidth / 2,
+        right: centerX + collisionWidth / 2,
+        top: centerY - collisionHeight / 2,
+        bottom: centerY + collisionHeight / 2,
       };
 
+      // Cek overlap dengan area tengah
       const isOverlap = !(
-        playerRect.right < area.left ||
-        playerRect.left > area.right ||
-        playerRect.bottom < area.top ||
-        playerRect.top > area.bottom
+        playerRect.right < centerRect.left ||
+        playerRect.left > centerRect.right ||
+        playerRect.bottom < centerRect.top ||
+        playerRect.top > centerRect.bottom
       );
 
-      if (isOverlap) overlapped = loc;
+      if (isOverlap) {
+        overlappingLocation = location;
+      }
     });
 
-    if (overlapped && currentLocation?.name !== overlapped.name) {
-      setCurrentLocation(overlapped);
+    if (
+      overlappingLocation &&
+      currentLocation?.name !== overlappingLocation.name
+    ) {
+      setCurrentLocation(overlappingLocation);
       setShowLocationWindow(true);
-    } else if (!overlapped) {
+    } else if (!overlappingLocation) {
       setShowLocationWindow(false);
     }
   };
@@ -224,9 +236,17 @@ const GameScreen = ({ playerData, returnToHome }) => {
   };
 
   useEffect(() => {
+    console.log("Bg Game:", bgGame);
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
+
+  const performAction = (action) => {
+    console.log("Performing action:", action);
+    setShowLocationWindow(false);
+  };
 
   return (
     <div
@@ -249,19 +269,26 @@ const GameScreen = ({ playerData, returnToHome }) => {
         maxStatus={maxStatus}
       />
 
-      {locations.map((loc, i) => (
+      {locations.map((location, index) => (
         <img
-          key={i}
-          ref={(el) => (locationRefs.current[loc.name] = el)}
-          src={loc.image}
-          alt={loc.name}
-          className="absolute pointer-events-none z-10"
-          style={{
-            left: `${loc.x}px`,
-            top: `${loc.y}px`,
-            width: `${loc.width}px`,
-            height: `${loc.height}px`,
-          }}
+          key={index}
+          ref={(el) => (locationRefs.current[location.name] = el)}
+          src={location.image}
+          alt={location.name}
+          className={location.className || ""}
+          style={
+            location.className
+              ? { pointerEvents: "none", zIndex: 1 }
+              : {
+                  position: "absolute",
+                  left: `${location.x}px`,
+                  top: `${location.y}px`,
+                  width: `${location.width}px`,
+                  height: `${location.height}px`,
+                  pointerEvents: "none",
+                  zIndex: 1,
+                }
+          }
         />
       ))}
 
@@ -276,7 +303,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
       {showLocationWindow && currentLocation && (
         <LocationWindow
           location={currentLocation.name}
-          onAction={() => setShowLocationWindow(false)}
+          onAction={performAction}
           onClose={() => setShowLocationWindow(false)}
         />
       )}
