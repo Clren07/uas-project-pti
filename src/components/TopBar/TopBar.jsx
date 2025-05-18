@@ -1,4 +1,5 @@
 import "./TopBar.css";
+
 const TopBar = ({ greeting, time, money }) => {
   const commonBg = "bg-[rgba(34,139,34,0.3)] rounded-xl";
 
@@ -24,8 +25,9 @@ const TopBar = ({ greeting, time, money }) => {
           className={`flex flex-col items-center px-4 py-2 min-w-[100px] transform transition-transform duration-200 hover:-translate-y-1 ${commonBg}`}
         >
           <span className="text-sm font-bold text-black">
-            ${money.toLocaleString("id-ID")}
-          </span>
+          Rp {money.toLocaleString("id-ID")}
+        </span>
+
         </div>
       </div>
     </div>

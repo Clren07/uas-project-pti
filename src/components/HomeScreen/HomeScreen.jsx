@@ -33,7 +33,7 @@ const HomeScreen = ({ startGame }) => {
 
   return (
     <div
-      className="w-full h-[105vh] flex justify-center items-center bg-cover bg-center bg-no-repeat overflow-hidden"
+      className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat overflow-hidden"
       style={{ backgroundImage: `url(${bgHome})` }}
     >
       <div className="flex flex-col items-center justify-center gap-4 p-6 rounded-xl bg-transparent max-w-sm w-full mt-48">
