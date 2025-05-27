@@ -80,10 +80,10 @@ const GameScreen = ({ playerData, returnToHome }) => {
   };
 
   const locations = [
-    { name: "The Mountain", x: 0, y: 190, width: 130, height: 100 },
+    { name: "The Mountain", x: 0, y: 240, width: 130, height: 40 },
     { name: "The Temple", x: 375, y: 320, width: 130, height: 50 },
-    { name: "Home", x: 685, y: 265, width: 160, height: 50 },
-    { name: "The City", x: 1080, y: 285, width: 200, height: 120 },
+    { name: "Home", x: 705, y: 265, width: 160, height: 50 },
+    { name: "The City", x: 1130, y: 285, width: 100, height: 80 },
     { name: "The Beach", x: 0, y: 530, width: 1450, height: 90 },
   ];
 
