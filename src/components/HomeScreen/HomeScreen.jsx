@@ -33,30 +33,46 @@ const HomeScreen = ({ startGame }) => {
 
   return (
     <div
-      className="min-h-screen flex justify-center items-center bg-cover bg-center bg-no-repeat overflow-hidden"
-      style={{ backgroundImage: `url(${bgHome})` }}
+      id="home-screen"
+      style={{
+        backgroundImage: `url(${bgHome})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        margin: 0,
+        padding: 0,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        width: "100vw", 
+        overflow: "hidden",
+      }}
     >
-      <div className="flex flex-col items-center justify-center gap-4 p-6 rounded-xl bg-transparent max-w-sm w-full mt-48">
+      <div className="container">
         <AvatarSelector
           selectedAvatar={selectedAvatar}
           onPrevClick={() => changeAvatar(-1)}
           onNextClick={() => changeAvatar(1)}
         />
-        <div className="flex flex-col items-center gap-2 w-full">
+        <div className="input-container">
           <input
             type="text"
             id="player-name"
             placeholder="Enter your name here..."
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
-            className="w-64 h-10 text-center text-base rounded-full border-2 border-gray-300 outline-none"
           />
           <img
             id="start-game"
             src={tombolStart}
             alt="Start Game"
             onClick={handleStartGame}
-            className="w-36 cursor-pointer transition-transform duration-200 hover:scale-110"
+            style={{
+              width: "150px",
+              cursor: "pointer",
+              transition: "transform 0.2s ease-in-out",
+            }}
           />
         </div>
       </div>

@@ -7,38 +7,31 @@ import kelinciImage from "../img/Kelinci.png";
 import beruangImage from "../img/Beruang.png";
 import panahKiri from "../img/panahKiri.png";
 import panahKanan from "../img/panahKanan.png";
+import "./AvatarSelector.css";
 
 const AvatarSelector = ({ selectedAvatar, onPrevClick, onNextClick }) => {
-  const avatars = [
-    babiImage,
-    kucingImage,
-    kucingHeadsetImage,
-    tupaiImage,
-    kelinciImage,
-    beruangImage,
-  ];
+  // Langsung menggunakan imported images sebagai array
+  const avatars = [babiImage, kucingImage, kucingHeadsetImage, tupaiImage, kelinciImage, beruangImage];
 
   return (
-    <div className="flex items-center justify-center gap-5">
+    <div className="avatar-selector">
       <img
         id="prev-avatar"
         src={panahKiri}
         alt="Previous Avatar"
         onClick={onPrevClick}
-        className="w-[50px] cursor-pointer transition-transform duration-200 ease-in-out hover:scale-125"
       />
-      <img
-        id="avatar"
-        src={selectedAvatar}
-        alt="Avatar"
-        className="w-[120px] h-auto"
+      <img 
+        id="avatar" 
+        src={selectedAvatar}  // Langsung gunakan prop yang dikirim
+        alt="Avatar" 
+        style={{ width: "120px", height: "auto" }}
       />
       <img
         id="next-avatar"
         src={panahKanan}
         alt="Next Avatar"
         onClick={onNextClick}
-        className="w-[50px] cursor-pointer transition-transform duration-200 ease-in-out hover:scale-125"
       />
     </div>
   );

@@ -1,25 +1,39 @@
-// GameScreen.jsx
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TopBar from "../TopBar/TopBar";
 import StatusBars from "../StatusBars/StatusBars";
 import GameArea from "../GameArea/GameArea";
-import LocationWindow from "../LocationWindow/LocationWindow";
+import BerdoaActivity from "./BerdoaActivity";  // Import Komponen BerdoaActivity
 import "./GameScreen.css";
 import bgGame from "../img/backgroundGameArea.png";
-import Beach from "../img/Beach.png";
-import Home from "../img/Home.png";
-import Temple from "../img/Temple.png";
-import Mountain from "../img/Mountain.png";
-import City from "../img/City.png";
+import TempleCleaningGame from "./TempleCleaningGame"; 
+
+import bunga from '../img/bunga.png';
+import payung from '../img/payung.png';
+import tas from '../img/tas.png';
+import bebek from '../img/bebek.png';
+import cincin from '../img/cincin.png';
+
 
 const GameScreen = ({ playerData, returnToHome }) => {
-  const locationRefs = useRef({});
+  const [showGameScreen, setShowGameScreen] = useState(true);
+  const [showTempleGame, setShowTempleGame] = useState(false);
+
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
     energy: 250,
     happiness: 250,
     hygiene: 250,
     money: 230000,
+  });
+
+  const startTempleCleaning = () => {
+    setShowTempleGame(true);
+  };
+
+  const [popupInfo, setPopupInfo] = useState({
+    text: "",
+    position: { x: 0, y: 0 },
+    visible: false,
   });
 
   const [gameTime, setGameTime] = useState({
@@ -32,62 +46,134 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [greeting, setGreeting] = useState("Good Morning");
   const [currentLocation, setCurrentLocation] = useState(null);
   const [showLocationWindow, setShowLocationWindow] = useState(false);
+  const [lastLocation, setLastLocation] = useState(null);
+
+  const [countdownText, setCountdownText] = useState(" ");
+  const [progressBarWidth, setProgressBarWidth] = useState("0%");
+
+  const [actionContent, setActionContent] = useState(null);
 
   const playerRef = useRef(null);
   const gameAreaRef = useRef(null);
 
   const maxStatus = 500;
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  const [items, setItems] = useState({
+    bunga: true,  // bunga belum ada 
+    payung: true,
+    tas: true,
+    bebek: true,
+    cincin: true,
+  });
+
+  // Function to add bunga to items after praying activity is completed
+  const addBungaToItems = () => {
+    if (!items.bunga) {
+      setItems((prevItems) => ({
+        ...prevItems,
+        bunga: true, // Add bunga to the inventory
+      }));
+    }
+    setShowGameScreen(true); // Show the game screen again after prayer is done
+    setActionContent(null); // Remove the prayer activity content after completing it
+  };
 
   const locations = [
-    {
-      name: "The Mountain",
-      image: Mountain,
-      width: 175,
-      height: 120,
-      className: "location mountain",
-      collisionArea: { width: 130, height: 130 },
-    },
-    {
-      name: "The Temple",
-      x: 330,
-      y: 260,
-      width: 200,
-      height: 150,
-      image: Temple,
-      collisionArea: { width: 100, height: 100 },
-    },
-    {
-      name: "Home",
-      x: 685,
-      y: 215,
-      width: 200,
-      height: 120,
-      image: Home,
-      collisionArea: { width: 175, height: 60 },
-    },
-    {
-      name: "The City",
-      image: City,
-      className: "location city",
-      collisionArea: { width: 140, height: 150 },
-    },
-    {
-      name: "The Beach",
-      image: Beach,
-      className: "location beach",
-      collisionArea: { width: 1920, height: 190 },
-    },
+    { name: "The Mountain", x: 0, y: 190, width: 130, height: 100 },
+    { name: "The Temple", x: 375, y: 320, width: 130, height: 50 },
+    { name: "Home", x: 685, y: 265, width: 160, height: 50 },
+    { name: "The City", x: 1080, y: 285, width: 200, height: 120 },
+    { name: "The Beach", x: 0, y: 530, width: 1450, height: 90 },
   ];
 
+  const activities = {
+    "The Mountain": [
+      { label: "Mendaki", info: "Energy -30, Happiness +20" },
+      {
+        label: "Camping & Masak",
+        info: "Hunger +25, Energy -30, Happiness +60, Money -15k",
+        hasMoney: true,
+      },
+      { label: "Observasi Satwa", info: "Happiness +40, Energy -20" },
+    ],
+   "The Temple": [
+      { 
+        label: "Berdoa", 
+        info: "Happiness +20", 
+        action: () => {
+          setShowGameScreen(false);
+          setActionContent(
+            <BerdoaActivity
+              durationInSeconds={10} // Durasi 30 detik
+              happinessGain={20} // Happiness gain
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setActionContent={setActionContent}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={addBungaToItems} // Pass the addBungaToItems function here
+            />
+          );
+
+          setActionContent(null); // Remove the prayer activity content after completing it
+          setShowGameScreen(true); // Show the game screen again after prayer is done
+
+          // Show happiness message
+          setPopupInfo({
+            text: "+Happiness 20",
+            backgroundColor: "#000", 
+            color: "#FFFF00",
+            position: { x: 300, y: 150 },  // Adjust position based on your design
+            visible: true,
+          });
+
+          // Hide happiness message after 2 seconds
+          setTimeout(() => {
+            setPopupInfo(prev => ({ ...prev, visible: false }));
+          }, 2000);  // Hide after 2 seconds
+
+        },
+      },
+      { label: "Menggambar Candi", info: "Happiness +20, Energy -10" },
+      {
+        label: "Fotografi & Jual Foto",
+        info: "Happiness +25, Money +10k",
+        hasMoney: true,
+      },
+      { label: "Bantu Membersihkan Candi", 
+        info: "Hygiene +30, Energy -20", 
+        action: () => setShowTempleGame(true),  
+      },
+    ],
+    Home: [
+      { label: "Makan", info: "Hunger +50, Money -10k", hasMoney: true },
+      { label: "Tidur", info: "Energy +50" },
+      { label: "Mandi", info: "Hygiene +25" },
+      { label: "Bersih-Bersih Rumah", info: "Hygiene +40, Energy -30" },
+    ],
+    "The City": [
+      { label: "Belanja Souvenir", info: "Money -25k, Happiness +30", hasMoney: true },
+      { label: "Makan di Restoran", info: "Hunger +50, Money -20k", hasMoney: true },
+      { label: "Volunteer Membersihkan Kota", info: "Happiness +40, Hygiene +20, Energy -30" },
+    ],
+    "The Beach": [
+      { label: "Berenang", info: "Energy -30, Happiness +20, Hygiene +10" },
+      { label: "Pungut Sampah", info: "Happiness +30, Hygiene +40, Energy -20" },
+      { label: "Cari Kerang Unik", info: "Happiness +15, Money +5k", hasMoney: true },
+    ],
+  };
+
+  // Handle item click to remove item
+  const handleItemClick = (item) => {
+    setItems((prevItems) => ({
+      ...prevItems,
+      [item]: false,  // Set item to false (hidden) when clicked
+    }));
+  };
+
+  // Initialize player position
   useEffect(() => {
     if (playerRef.current && gameAreaRef.current) {
       const gameArea = gameAreaRef.current;
@@ -101,6 +187,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
     }
   }, []);
 
+  // Game time update
   useEffect(() => {
     const timer = setInterval(() => {
       setGameTime((prev) => {
@@ -131,6 +218,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
     return () => clearInterval(timer);
   }, []);
 
+  // Update greeting based on time
   useEffect(() => {
     const { hours } = gameTime;
 
@@ -145,6 +233,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
     }
   }, [gameTime.hours]);
 
+  // Decrease status bars over time
   useEffect(() => {
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
@@ -183,54 +272,59 @@ const GameScreen = ({ playerData, returnToHome }) => {
     checkCollision(newX, newY);
   };
 
-  const checkCollision = () => {
-    const player = playerRef.current;
-    if (!player) return;
+  const lastLocationRef = useRef(lastLocation);
+  const showLocationWindowRef = useRef(showLocationWindow);
 
-    const playerRect = player.getBoundingClientRect();
+  useEffect(() => {
+    lastLocationRef.current = lastLocation;
+  }, [lastLocation]);
+
+  useEffect(() => {
+    showLocationWindowRef.current = showLocationWindow;
+  }, [showLocationWindow]);
+
+  const checkCollision = (x, y) => {
+    const playerWidth = playerRef.current?.offsetWidth || 50;
+    const playerHeight = playerRef.current?.offsetHeight || 50;
+
+    const validLocations = [
+      "The Mountain",
+      "The Temple",
+      "Home",
+      "The City",
+      "The Beach",
+    ];
+
     let overlappingLocation = null;
 
-    locations.forEach((location) => {
-      const locElement = locationRefs.current[location.name];
-      if (!locElement || !location.collisionArea) return;
-
-      const locRect = locElement.getBoundingClientRect();
-
-      // Hitung area tengah untuk collision
-      const centerX = locRect.left + locRect.width / 2;
-      const centerY = locRect.top + locRect.height / 2;
-      const collisionWidth = location.collisionArea.width;
-      const collisionHeight = location.collisionArea.height;
-
-      // Buat rect untuk area tengah
-      const centerRect = {
-        left: centerX - collisionWidth / 2,
-        right: centerX + collisionWidth / 2,
-        top: centerY - collisionHeight / 2,
-        bottom: centerY + collisionHeight / 2,
-      };
-
-      // Cek overlap dengan area tengah
-      const isOverlap = !(
-        playerRect.right < centerRect.left ||
-        playerRect.left > centerRect.right ||
-        playerRect.bottom < centerRect.top ||
-        playerRect.top > centerRect.bottom
-      );
-
-      if (isOverlap) {
+    for (const location of locations) {
+      if (
+        x < location.x + location.width &&
+        x + playerWidth > location.x &&
+        y < location.y + location.height &&
+        y + playerHeight > location.y &&
+        validLocations.includes(location.name)
+      ) {
         overlappingLocation = location;
+        break;
       }
-    });
+    }
 
-    if (
-      overlappingLocation &&
-      currentLocation?.name !== overlappingLocation.name
-    ) {
-      setCurrentLocation(overlappingLocation);
-      setShowLocationWindow(true);
-    } else if (!overlappingLocation) {
-      setShowLocationWindow(false);
+    if (overlappingLocation) {
+      if (lastLocationRef.current !== overlappingLocation.name) {
+        setCurrentLocation(overlappingLocation);
+        setShowLocationWindow(true);
+        setLastLocation(overlappingLocation.name);
+      } else if (!showLocationWindowRef.current) {
+        setShowLocationWindow(true);
+      }
+    } else {
+      if (showLocationWindowRef.current || lastLocationRef.current !== null) {
+        setShowLocationWindow(false);
+        setCurrentLocation(null);
+        setLastLocation(null);
+        setPopupInfo((prev) => ({ ...prev, visible: false }));  // Hide popup when location window is closed
+      }
     }
   };
 
@@ -256,19 +350,19 @@ const GameScreen = ({ playerData, returnToHome }) => {
   };
 
   useEffect(() => {
-    console.log("Bg Game:", bgGame);
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
-  const performAction = (action) => {
-    console.log("Performing action:", action);
+  const performAction = (label) => {
+    console.log("Action performed:", label);
     setShowLocationWindow(false);
+    setPopupInfo((prev) => ({ ...prev, visible: false }));  // Close the popup after action
   };
 
-  return (
+return (
     <div
       id="game-screen"
       ref={gameAreaRef}
@@ -279,63 +373,220 @@ const GameScreen = ({ playerData, returnToHome }) => {
         backgroundRepeat: "no-repeat",
         width: "100vw",
         height: "105vh",
-        position: "relative",
-        display: "block",
-        overflow: "hidden",
+        display: showGameScreen ? "block" : "none",
       }}
     >
-      <TopBar
-        greeting={greeting}
-        time={`${gameTime.day} | Day ${gameTime.dayCount} | ${String(
-          gameTime.hours
-        ).padStart(2, "0")}:${String(gameTime.minutes).padStart(2, "0")}`}
-        money={statusLevels.money}
-      />
+      {actionContent ? (
+        actionContent
+      ) : (
+        <>
+          <TopBar
+            greeting={greeting}
+            time={`${gameTime.day} | Day ${gameTime.dayCount} | ${String(gameTime.hours).padStart(2, "0")}:${String(gameTime.minutes).padStart(2, "0")}`}
+            money={statusLevels.money}
+          />
+          <StatusBars
+            hunger={statusLevels.hunger}
+            energy={statusLevels.energy}
+            happiness={statusLevels.happiness}
+            hygiene={statusLevels.hygiene}
+            maxStatus={maxStatus}
+          />
+          <GameArea
+            playerRef={playerRef}
+            playerName={playerData.name}
+            playerAvatar={playerData.avatar}
+            onMove={movePlayer}
+          />
+          {locations.map((loc) => (
+            <div
+              key={loc.name}
+              style={{
+                position: "absolute",
+                top: loc.y,
+                left: loc.x,
+                width: loc.width,
+                height: loc.height,
+                border: "2px solid red",
+                backgroundColor: "rgba(255, 0, 0, 0.15)",
+                pointerEvents: "none",
+                zIndex: 5,
+              }}
+              title={`Collision Area: ${loc.name}`}
+            />
+          ))}
 
-      <StatusBars
-        hunger={statusLevels.hunger}
-        energy={statusLevels.energy}
-        happiness={statusLevels.happiness}
-        hygiene={statusLevels.hygiene}
-        maxStatus={maxStatus}
-      />
+          {showLocationWindow && currentLocation && (
+            <div
+              id="location-window"
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "15%",
+                backgroundColor: "rgba(0,0,0,0.6)",
+                padding: "20px",
+                borderRadius: "15px",
+                width: "300px",
+                color: "white",
+                zIndex: 1000,
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                id="location-title"
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  marginBottom: "10px",
+                  textAlign: "center",
+                }}
+              >
+                You are at {currentLocation.name.toLowerCase().replace("the ", "")}!
+              </div>
 
-      {locations.map((location, index) => (
-        <img
-          key={index}
-          ref={(el) => (locationRefs.current[location.name] = el)}
-          src={location.image}
-          alt={location.name}
-          className={location.className || ""}
-          style={
-            location.className
-              ? { pointerEvents: "none", zIndex: 1 }
-              : {
-                  position: "absolute",
-                  left: `${location.x}px`,
-                  top: `${location.y}px`,
-                  width: `${location.width}px`,
-                  height: `${location.height}px`,
-                  pointerEvents: "none",
-                  zIndex: 1,
-                }
-          }
-        />
-      ))}
+                <div
+                id="action-buttons"
+                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              >
+                {activities[currentLocation.name].map((act, idx) => {
+                  const moneyMatch = act.info.match(/Money ([+-])(\d+k)/i);
+                  let moneyMessage = "";
+                  if (act.hasMoney && moneyMatch) {
+                    const sign = moneyMatch[1];
+                    const amount = moneyMatch[2];
+                    moneyMessage =
+                      sign === "+"
+                        ? `You will get ${amount} for doing this activity.`
+                        : `You will lose ${amount} for doing this activity.`;
+                  }
 
-      <GameArea
-        playerRef={playerRef}
-        playerName={playerData.name}
-        playerAvatar={playerData.avatar}
-        onMove={movePlayer}
-        locations={locations}
-      />
+                  return (
+                    <button
+                      key={idx}
+                      className="action-button"
+                      onClick={() => act.action()}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        setPopupInfo({
+                          text: act.info,
+                          position: { x: rect.right + 10, y: rect.top },
+                          visible: true,
+                        });
+                      }}
+                      onMouseLeave={() =>
+                        setPopupInfo((prev) => ({ ...prev, visible: false }))
+                      }
+                    >
+                      {act.label}
+                      {act.hasMoney && (
+                        <span
+                          className="info-icon"
+                          onMouseEnter={(e) => {
+                            e.stopPropagation();
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setPopupInfo({
+                              text: moneyMessage,
+                              position: { x: rect.right + 10, y: rect.top },
+                              visible: true,
+                            });
+                          }}
+                          onMouseLeave={(e) => {
+                            e.stopPropagation();
+                            setPopupInfo((prev) => ({ ...prev, visible: false }));
+                          }}
+                        >
+                          i
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <div
+                style={{ marginTop: "20px", fontWeight: "bold", fontSize: "18px" }}
+              >
+                ITEMS
+              </div>
+              <div id="items-container" className="items-container">
+                {items.bunga && (
+                  <div
+                    className="item-icon"
+                    style={{ backgroundImage: `url(${bunga})` }}
+                    onClick={() => handleItemClick("bunga")}
+                  />
+                )}
+                {items.payung && (
+                  <div
+                    className="item-icon"
+                    style={{ backgroundImage: `url(${payung})` }}
+                    onClick={() => handleItemClick("payung")}
+                  />
+                )}
+                {items.tas && (
+                  <div
+                    className="item-icon"
+                    style={{ backgroundImage: `url(${tas})` }}
+                    onClick={() => handleItemClick("tas")}
+                  />
+                )}
+                {items.bebek && (
+                  <div
+                    className="item-icon"
+                    style={{ backgroundImage: `url(${bebek})` }}
+                    onClick={() => handleItemClick("bebek")}
+                  />
+                )}
+                {items.cincin && (
+                  <div
+                    className="item-icon"
+                    style={{ backgroundImage: `url(${cincin})` }}
+                    onClick={() => handleItemClick("cincin")}
+                  />
+                )}
+              </div>
+            </div>
+          )}
 
-      {showLocationWindow && currentLocation && (
-        <LocationWindow
-          location={currentLocation.name}
-          onAction={performAction}
-          onClose={() => setShowLocationWindow(false)}
+          {popupInfo.visible && (
+            <div
+              id="popup"
+              style={{
+                position: "fixed",
+                top: `${popupInfo.position.y}px`,  // Menyesuaikan posisi vertikal sesuai dengan posisi tombol
+                left: `${popupInfo.position.x + 10}px`,  // Mengatur posisi popup sedikit ke kanan dari tombol
+                backgroundColor: "#121111",
+                border: "1px solid #1b1717",
+                padding: "6px 10px",
+                fontSize: "13px",
+                borderRadius: "15px",
+                boxShadow: "2px 2px 6px rgba(0,0,0,0.15)",
+                maxWidth: "200px",
+                color: "#e5eb3e",
+                zIndex: 9999,
+                pointerEvents: "none",
+                whiteSpace: "normal",
+                userSelect: "none",
+                display: "block",
+              }}
+            >
+              {popupInfo.text}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Render the temple cleaning game when triggered */}
+      {showTempleGame && (
+        <TempleCleaningGame
+          hygieneGain={40}
+          energyLoss={20}
+          setStatusLevels={setStatusLevels}
+          maxStatus={maxStatus}
+          updateStatusBars={() => console.log("Updating status bars...")}
+          showTempleGame={showTempleGame}
         />
       )}
     </div>

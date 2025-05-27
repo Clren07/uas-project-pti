@@ -1,14 +1,14 @@
 import { useState } from "react";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
 import GameScreen from "./components/GameScreen/GameScreen";
-import bgGame from "./components/img/backgroundGameArea.png";
-import bgHome from "./components/img/backgroundStartScreen.png";
-import babi from "./components/img/Babi.png";
-import kucing from "./components/img/Kucing.png";
-import kucingHeadset from "./components/img/KucingHeadset.png";
-import tupai from "./components/img/Tupai.png";
-import kelinci from "./components/img/Kelinci.png";
-import beruang from "./components/img/Beruang.png";
+import bgGame from "./components/img/backgroundGameArea.png";  // Corrected path
+import bgHome from "./components/img/backgroundStartScreen.png";  // Corrected path
+import babi from "./components/img/Babi.png";  // Corrected path
+import kucing from "./components/img/Kucing.png";  // Corrected path
+import kucingHeadset from "./components/img/KucingHeadset.png";  // Corrected path
+import tupai from "./components/img/Tupai.png";  // Corrected path
+import kelinci from "./components/img/Kelinci.png";  // Corrected path
+import beruang from "./components/img/Beruang.png";  // Corrected path
 
 function TestBackground() {
   return (
@@ -23,7 +23,7 @@ function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [playerData, setPlayerData] = useState({
     name: "",
-    avatar: babi, // Using the imported image directly
+    avatar: babi,  // Using the imported image directly
   });
 
   const startGame = (name, avatar) => {

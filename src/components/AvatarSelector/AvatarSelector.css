@@ -1,1 +1,20 @@
-@import "tailwindcss";
+.avatar-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+#avatar {
+  width: 120px;
+  height: auto;
+}
+
+#prev-avatar, #next-avatar {
+  width: 50px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+#prev-avatar:hover, #next-avatar:hover {
+  transform: scale(1.2);
+}

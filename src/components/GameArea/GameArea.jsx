@@ -34,28 +34,39 @@ const GameArea = ({ playerRef, playerName, playerAvatar, onMove }) => {
         id="player-wrapper"
         style={{
           position: "absolute",
-          textAlign: "center",
+          width: "90px",
+          height: "110px", // avatar 90px + name 20px
           zIndex: 10,
+          pointerEvents: "none",
         }}
       >
         <img
-          id="player-avatar"
           src={playerAvatar}
           alt="Player Avatar"
-          style={{ width: "90px", height: "90px", position: "absolute"}}
-        />
-        <p
-          id="player-name-display"
           style={{
-            margin: "15px 0",
+            width: "90px",
+            height: "90px",
+            display: "block",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: "90px", // tepat di bawah avatar
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "2px 6px",
+            borderRadius: "6px",
             fontSize: "14px",
             color: "#000",
-            padding: "2px 4px",
+            fontWeight: "bold",
+            whiteSpace: "nowrap",
           }}
         >
           {playerName}
-        </p>
+        </div>
       </div>
+
 
       {/* Arrow controls */}
       <div id="arrow-buttons">

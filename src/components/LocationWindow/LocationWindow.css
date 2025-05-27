@@ -1,1 +1,82 @@
-@import "tailwindcss";
+.location-window {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 150px;
+  left: 15%;
+  transform: translateX(-50%);
+  width: 300px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  z-index: 100;
+}
+
+.locationTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.actionButton {
+  background-color: yellow;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.actionButton:hover {
+  background-color: gold;
+  color: black;
+}
+
+.infoIcon {
+  font-style: normal;
+  font-weight: bold;
+  margin-left: 6px;
+  color: #fff;
+  background-color: #ff1b1b;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: help;
+  transition: background-color 0.3s;
+}
+
+.infoIcon:hover {
+  background-color: #ff2626;
+}
+
+.popup {
+  position: absolute;
+  background-color: #121111;
+  border: 1px solid #1b1717;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  max-width: 200px;
+  color: #e5eb3e;
+  white-space: pre-line;
+}

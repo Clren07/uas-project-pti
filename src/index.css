@@ -1,1 +1,626 @@
-@import "tailwindcss";
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 105vh; /* Mengisi seluruh layar */
+    overflow: hidden; /* Menghindari scroll */
+    background-image: url('backgroundStartScreen.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.items-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.item-icon {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    background: transparent;
+    margin-top: 240px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.avatar-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+input {
+    width: 250px;
+    height: 40px;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px; /* Kurangi jarak antara input dan tombol start */
+    width: 100%;
+}
+
+#avatar {
+    width: 120px;
+    height: auto;
+}
+
+#prev-avatar, #next-avatar {
+    width: 50px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+#prev-avatar:hover, #next-avatar:hover {
+    transform: scale(1.2); /* Sedikit membesar saat di-hover */
+}
+
+#player-name {
+    width: 100%;
+    max-width: 250px;
+    height: 40px;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    text-align: center;
+    font-size: 16px;
+    outline: none;
+}
+
+#start-game {
+    width: 150px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+#start-game:hover {
+    transform: scale(1.1); /* Sedikit membesar */
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        max-width: 300px;
+        padding: 10px;
+    }
+
+    #player-name {
+        font-size: 14px;
+        height: 35px;
+    }
+
+    .input-container {
+        gap: 2px; /* Lebih kecil lagi untuk layar kecil */
+    }
+
+    #start-game {
+        width: 120px;
+    }
+}
+
+.name-alert-popup {
+  position: fixed;
+  top: 5%;
+  right: 5%;
+  background: rgba(255, 225, 0, 0.354);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 12px 20px;
+  color: #000000;
+  font-weight: 600;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 14px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  user-select: none;
+}
+
+.name-alert-popup.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* Styles for the game screen after start */
+.game-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 105vh;
+    overflow: hidden;
+    background-image: url('backgroundGameArea.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#game-screen {
+    width: 100vw;
+    height: 105vh;
+}
+
+/* ===== Glassmorphism Container Style ===== */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.15); /* Putih transparan */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Menyusun Good Morning, Waktu, dan Money di tengah atas dengan background transparan */
+.top-bar {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 5px 5px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #f0f0f5;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    z-index: 20;
+
+    /* Terapkan efek glass */
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Styling untuk setiap elemen dalam top-bar */
+.top-bar span {
+    padding: 8px 10px;
+    border-radius: 20px;
+    background: rgba(150, 190, 255, 0.76);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    color: #ffffff;
+    font-weight: 700;
+    user-select: none;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.top-bar span:hover {
+  background: rgba(255, 255, 255, 0.5);
+  cursor: default;
+}
+
+/* Menyusun status-status bar agar sejajar horizontal dan tetap di tengah */
+.status-bars {
+    position: absolute;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    max-width: 650px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+
+    /* Efek glass */
+    background: rgba(255, 255, 255, 0.13);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 20;
+}
+
+/* Status bar lebih kecil dan tetap rapi */
+.status-bar {
+    width: 110px; /* Lebih kecil */
+    height: 12px; /* Lebih kecil */
+    background-color: #4CAF50; 
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 15px;
+}
+
+/* ===== Individual Bar Container ===== */
+.bar-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 170px;
+}
+
+/* Emoji / Icon on the left */
+.bar-container > span {
+  font-size: 24px;
+  user-select: none;
+  color: #fff;
+  text-shadow: 0 0 3px rgba(0,0,0,0.6);
+}
+
+/* Bar Background */
+.bar {
+  flex-grow: 1;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Bar Fill with gradient and smooth transition */
+.bar-fill {
+  height: 100%;
+  width: 50%; /* Will be updated dynamically */
+  border-radius: 12px;
+  background: linear-gradient(90deg, #6affcb 0%, #00d4ff 100%);
+  box-shadow: 0 0 8px #00d4ff;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+}
+
+/* Color variations based on levels */
+/* Low status */
+.status-bar.low {
+  background: linear-gradient(90deg, #ff9a3c 0%, #ff6f3c 100%);
+  box-shadow: 0 0 10px #ff6f3c;
+}
+
+/* Critical status */
+.status-bar.critical {
+  background: linear-gradient(90deg, #ff3c3c 0%, #ff0000 100%);
+  box-shadow: 0 0 12px #ff0000;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media screen and (max-width: 480px) {
+  .top-bar {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+
+  .status-bars {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 20px;
+    width: 90%;
+  }
+
+  .bar-container {
+    width: 100%;
+  }
+}
+
+/* Avatar diposisikan di kiri */
+.avatar-container {
+    position: absolute;
+    top: 80px; /* Sesuaikan agar avatar tetap berada di jalan */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+
+.avatar-container img {
+    width: 40px; /* Ukuran kecil agar masuk di jalan */
+    object-fit: contain; /* Pastikan avatar tidak terdistorsi */
+}
+
+.greeting-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.player-container {
+    text-align: center;
+}
+
+#player-avatar {
+    width: 85px; 
+    position: absolute; 
+    object-fit: contain; 
+    left: 50%;
+    top: calc(50% + 0px);
+}
+
+#player-name-display {
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 30px); /* Posisi awal 30px di bawah avatar */
+    transform: translate(-50%, 0);
+    font-size: 12px;
+    font-weight: bold;
+    color: rgb(24, 24, 24); 
+    text-align: center;
+    width: 100px; /* Lebar tetap agar selalu tengah */
+}
+
+/* Area untuk Kotak Merah */
+.box-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Agar tidak mengganggu elemen lain */
+    z-index: 1; /* Pastikan ada di bawah elemen utama */
+}
+
+#box1 {
+    position: absolute;
+    width: 220px;
+    height: 160px;
+    opacity: 70%;
+    background-color: red;
+    border: 2px solid black;
+    pointer-events: auto; /* Hanya kotak merah yang bisa diklik */
+}
+
+#box2 {
+    position: absolute;
+    width: 260px;
+    height: 170px;
+    opacity: 70%;
+    background-color: red;
+    border: 2px solid black;
+    pointer-events: auto; /* Hanya kotak merah yang bisa diklik */
+}
+
+#box3 {
+    position: absolute;
+    width: 270px; 
+    height: 180px;
+    opacity: 70%;
+    background-color: red;
+    border: 2px solid black;
+    pointer-events: auto; /* Hanya kotak merah yang bisa diklik */
+}
+
+#box4 {
+    position: absolute;
+    width: 240px; 
+    height: 235px; 
+    opacity: 70%;
+    background-color: red;
+    border: 2px solid black;
+    pointer-events: auto; /* Hanya kotak merah yang bisa diklik */
+} 
+
+#box5 {
+    position: absolute; 
+    width: 1450px;
+    height: 90px; 
+    opacity: 70%;
+    background-color: red;
+    border: 2px solid black;
+    pointer-events: auto; /* Hanya kotak merah yang bisa diklik */ 
+}
+
+/* Posisi kotak
+#box1 { top: 215px; left: 0px; } 
+#box2 { top: 275px; left: 310px; } 
+#box3 { top: 215px; left: 655px; } 
+#box4 { top: 215px; right: 0px; } 
+#box5 { top: 460px; left: 0px;} 
+
+.popup {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 2px solid black;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.popup button {
+    display: block;
+    margin: 10px 0;
+    width: 100%;
+}
+*/
+
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#location-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+
+#arrow-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px; /* Menambahkan jarak antar tombol */
+}
+
+#arrow-buttons div {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px; /* Menambahkan jarak antar tombol kiri dan kanan */
+}
+
+#arrow-buttons button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+#arrow-buttons img :hover{
+    transform: scale(1.2);
+}
+
+#arrow-buttons img {
+    width: 35px;
+    height: 31px; /* Mengubah ukuran gambar agar proporsional */
+    object-fit: contain; /* Menjaga gambar agar tidak terdistorsi */
+}
+
+#arrow-buttons div button {
+    width: 35px;  /* Menjamin lebar tombol sesuai gambar */
+}
+
+/* Hover effect */
+#arrow-buttons img:hover {
+    transform: scale(1.3); /* Membesarkan gambar saat di-hover */
+    filter: brightness(1.2); /* Efek terang saat di-hover */
+}
+
+#photography-game {
+    position: absolute;
+    top: 150px;
+    left: 15%;
+    transform: translateX(-50%);
+    width: 330px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin: auto;
+    display: none;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+    margin: 10px auto;
+  }
+  
+.grid-cell {
+    width: 80px;
+    height: 80px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    position: relative;
+  }
+  
+.avatar {
+    width: 100%;
+    height: 100%;
+    background-color: transparent; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  
+.photo {
+    background-image: url('photo-icon.png');
+    background-size: cover;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+#temple-cleaning-game {
+    position: absolute;
+    top: 150px;
+    left: 15%;
+    transform: translateX(-50%);
+    width: 330px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin: auto;
+    display: none;
+}
+
+#city-souvenir-game {
+    position: absolute;
+    top: 150px;
+    left: 15%;
+    transform: translateX(-50%);
+    width: 330px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin: auto;
+    display: none;
+}
+
+#city-cleanup-game {
+    position: absolute;
+    top: 150px;
+    left: 15%;
+    transform: translateX(-50%);
+    width: 330px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin: auto;
+    display: none;
+}
+
