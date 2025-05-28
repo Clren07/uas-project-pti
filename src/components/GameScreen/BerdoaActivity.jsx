@@ -61,12 +61,14 @@ const BerdoaActivity = ({
         visible: true,
       });
 
+
       setTimeout(() => {
         console.log("Hiding popup and switching screen back to game");
         setPopupInfo((prev) => ({ ...prev, visible: false }));
         setShowGameScreen(true);
         setShowTempleGame(false);
         setActionContent(null);
+        if (onComplete) onComplete();
       }, 2000);
     }
   }, [

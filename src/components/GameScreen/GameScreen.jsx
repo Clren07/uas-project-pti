@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import TopBar from "../TopBar/TopBar";
 import StatusBars from "../StatusBars/StatusBars";
-import GameArea from "../GameArea/GameArea"  // Import Komponen BerdoaActivity
+import GameArea from "../GameArea/GameArea"  
 import "./GameScreen.css";
 import bgGame from "../img/backgroundGameArea.png";
 import TempleCleaningGame from "./TempleCleaningGame"; 
@@ -9,6 +9,10 @@ import TempleBackground from "../img/temple.png";
 import BerdoaActivity from "./BerdoaActivity";
 import MenggambarActivity from "./MenggambarActivity";
 import FotografiActivity from "./FotografiActivity";
+
+import CityBackground from "../img/city.png";
+import BelanjaSouvenir from "./BelanjaSouvenir";
+
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
 import tas from '../img/tas.png';
@@ -18,6 +22,7 @@ import cincin from '../img/cincin.png';
 const GameScreen = ({ playerData, returnToHome }) => {
   const [showGameScreen, setShowGameScreen] = useState(true);
   const [showTempleGame, setShowTempleGame] = useState(false);
+  const [showCityGame, setShowCityGame] = useState(false);
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -272,7 +277,42 @@ const GameScreen = ({ playerData, returnToHome }) => {
       { label: "Bersih-Bersih Rumah", info: "Hygiene +40, Energy -30" },
     ],
     "The City": [
-      { label: "Belanja Souvenir", info: "Money -25k, Happiness +30", hasMoney: true },
+      { label: "Belanja Souvenir", 
+        info: "Money -25k, Happiness +30", 
+        hasMoney: true,
+        action: () => {
+          setShowGameScreen(false);
+          setShowCityGame(true);
+          setActionContent(
+            <BelanjaSouvenir
+              durationInSeconds={20}
+              happinessGain={30}
+              moneyLoss={25000}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowCityGame={setShowCityGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  const updatedLevels = {
+                    ...prevLevels,
+                    happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 30),
+                    money: (prevLevels.money || 0) + 10000,
+                  };
+                  console.log("Updated Status Levels:", updatedLevels);
+                  return updatedLevels;
+                });
+                resetAvatarPosition();
+                addTasToItems(); // Menambahkan souvenir ke inventory
+              }}
+            />
+          );
+        }
+      },
       { label: "Makan di Restoran", info: "Hunger +50, Money -20k", hasMoney: true },
       { label: "Volunteer Membersihkan Kota", info: "Happiness +40, Hygiene +20, Energy -30" },
     ],
@@ -488,6 +528,26 @@ return (
         id="temple-screen"
         style={{
           backgroundImage: `url(${TempleBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "100vw",
+          height: "105vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 10,
+          display: "block",
+        }}
+      >
+        {actionContent}
+      </div>
+    )}
+    {showCityGame && (
+      <div
+        id="city-screen"
+        style={{
+          backgroundImage: `url(${CityBackground})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
