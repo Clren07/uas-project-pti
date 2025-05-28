@@ -52,6 +52,7 @@ const BerdoaActivity = ({
         onComplete();
       }
 
+      // First, show the popup
       setPopupInfo({
         text: `Berdoa selesai! Happiness +${happinessGain}`,
         backgroundColor: "#000",
@@ -60,15 +61,27 @@ const BerdoaActivity = ({
         visible: true,
       });
 
+      // After 2 seconds, hide the popup and reset the screens
       setTimeout(() => {
         console.log("Hiding popup and switching screen back to game");
         setPopupInfo(prev => ({ ...prev, visible: false }));
-        setShowGameScreen(true);
-        setShowTempleGame(false);
-        setActionContent(null);
-      }, 2000);
+        setShowGameScreen(true); // Show the main game screen
+        setShowTempleGame(false); // Hide temple game screen
+        setActionContent(null); // Clear any action content
+      }, 2000); // Wait for 2 seconds
     }
-  }, [countdown]);
+  }, [
+    countdown,
+    durationInSeconds,
+    happinessGain,
+    maxStatus.happiness,
+    onComplete,
+    setPopupInfo,
+    setStatusLevels,
+    setShowGameScreen,
+    setShowTempleGame,
+    setActionContent,
+  ]);
 
   return (
     <div

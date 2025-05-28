@@ -25,6 +25,10 @@ const GameScreen = ({ playerData, returnToHome }) => {
     money: 230000,
   });
 
+  useEffect(() => {
+    console.log("Status Levels updated:", statusLevels);  // Debugging status
+  }, [statusLevels]);
+
   const [popupInfo, setPopupInfo] = useState({
     text: "",
     position: { x: 0, y: 0 },
@@ -58,10 +62,30 @@ const GameScreen = ({ playerData, returnToHome }) => {
   hygiene: 500,
   };
 
+  const resetAvatarPosition = () => {
+    if (playerRef.current && gameAreaRef.current) {
+      const gameArea = gameAreaRef.current;
+      const player = playerRef.current;
+
+      const centerX = (gameArea.offsetWidth - player.offsetWidth) / 2;
+      const centerY = (gameArea.offsetHeight - player.offsetHeight) / 2;
+
+      // Set avatar ke posisi tengah
+      player.style.left = `${centerX}px`;
+      player.style.top = `${centerY}px`;
+    }
+  };
+
+  useEffect(() => {
+    if (showGameScreen) {
+      resetAvatarPosition(); // Reset posisi avatar setiap kali kembali ke game screen
+    }
+  }, [showGameScreen]);
+
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const [items, setItems] = useState({
-    bunga: true,  // bunga belum ada 
+    bunga: true,  
     payung: true,
     tas: true,
     bebek: true,
@@ -115,7 +139,19 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 setPopupInfo={setPopupInfo}
                 setCountdownText={setCountdownText}
                 setProgressBarWidth={setProgressBarWidth}
-                onComplete={addBungaToItems}
+                onComplete={() => {
+                  // Tambah happiness dan tambahkan bunga ke items setelah berdoa selesai
+                  setStatusLevels((prevLevels) => {
+                    const updatedLevels = {
+                      ...prevLevels,
+                      happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 20), // Menambahkan 20 ke happiness
+                    };
+                    console.log("Updated Status Levels:", updatedLevels); // Debugging
+                    return updatedLevels;
+                  });
+                  resetAvatarPosition();
+                  addBungaToItems();  // Menambahkan bunga ke inventory
+                }}
               />
             );
           },
@@ -221,6 +257,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   useEffect(() => {
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
+        ...prev, 
         hunger: Math.max(0, prev.hunger - 50),
         energy: Math.max(0, prev.energy - 50),
         happiness: Math.max(0, prev.happiness - 50),
@@ -391,6 +428,7 @@ return (
             money={statusLevels.money}
           />
           <StatusBars
+            key={`${statusLevels.hunger}-${statusLevels.energy}-${statusLevels.happiness}-${statusLevels.hygiene}`}
             hunger={statusLevels.hunger}
             energy={statusLevels.energy}
             happiness={statusLevels.happiness}
