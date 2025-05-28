@@ -7,6 +7,8 @@ import bgGame from "../img/backgroundGameArea.png";
 import TempleCleaningGame from "./TempleCleaningGame"; 
 import TempleBackground from "../img/temple.png";
 import BerdoaActivity from "./BerdoaActivity";
+import MenggambarActivity from "./MenggambarActivity";
+import FotografiActivity from "./FotografiActivity";
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
 import tas from '../img/tas.png';
@@ -129,7 +131,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
             setShowTempleGame(true);
             setActionContent(
               <BerdoaActivity
-                durationInSeconds={5}
+                durationInSeconds={10}
                 happinessGain={20}
                 setStatusLevels={setStatusLevels}
                 maxStatus={maxStatus}
@@ -156,16 +158,112 @@ const GameScreen = ({ playerData, returnToHome }) => {
             );
           },
         },
-      { label: "Menggambar Candi", info: "Happiness +20, Energy -10" },
+      { label: "Menggambar Candi", 
+        info: "Happiness +20, Energy -10",
+        action: () => {
+          setShowGameScreen(false);
+          setShowTempleGame(true);
+          setActionContent(
+            <MenggambarActivity
+              durationInSeconds={10}
+              happinessGain={20}
+              energyLoss={10}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowTempleGame={setShowTempleGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+              setStatusLevels((prevLevels) => {
+                const updatedLevels = {
+                  ...prevLevels,
+                  happiness: Math.min(maxStatus.happiness, (prevLevels.happiness || 0) + 20),
+                  energy: Math.max(0, (prevLevels.energy || 0) - 10),  // kurangi energy, jangan sampai di bawah 0
+                };
+                console.log("Updated Status Levels:", updatedLevels);
+                return updatedLevels;
+              });
+              resetAvatarPosition();
+              addBungaToItems();  // Menambahkan bunga ke inventory setelah menggambar selesai
+            }}
+            />
+          );
+        },
+      },
       {
         label: "Fotografi & Jual Foto",
         info: "Happiness +25, Money +10k",
         hasMoney: true,
-      },
-      { label: "Bantu Membersihkan Candi", 
-        info: "Hygiene +30, Energy -20", 
-        action: () => setShowTempleGame(true),  
-      },
+        action: () => {
+          setShowGameScreen(false);
+          setShowTempleGame(true);
+          setActionContent(
+            <FotografiActivity
+              happinessGain={25}
+              moneyGain={10000}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowTempleGame={setShowTempleGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  const updatedLevels = {
+                    ...prevLevels,
+                    happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 25),
+                    money: (prevLevels.money || 0) + 10000,
+                  };
+                  console.log("Updated Status Levels:", updatedLevels);
+                  return updatedLevels;
+                });
+                resetAvatarPosition();
+                addBungaToItems();  // Tambah bunga ke inventory
+              }}
+            />
+          );
+        },
+      },      
+      {
+        label: "Bantu Membersihkan Candi",
+        info: "Hygiene +30, Energy -20",
+        action: () => {
+          setShowGameScreen(false);
+          setShowTempleGame(true);
+          setActionContent(
+            <TempleCleaningGame
+              hygieneGain = {30}
+              energyLoss = {12000}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowTempleGame={setShowTempleGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  const updatedLevels = {
+                    ...prevLevels,
+                    hygiene: Math.min(maxStatus.hygiene, (prevLevels.hygiene || 0) + 30),
+                    energy: Math.max(0, (prevLevels.energy || 0) - 20),
+                  };
+                  console.log("Updated Status Levels:", updatedLevels);
+                  return updatedLevels;
+                });
+                resetAvatarPosition();
+                addBungaToItems();
+              }}
+            />
+          );
+        },
+      }    
     ],
     Home: [
       { label: "Makan", info: "Hunger +50, Money -10k", hasMoney: true },

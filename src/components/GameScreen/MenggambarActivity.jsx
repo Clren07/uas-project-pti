@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import BerdoaImg from "../img/berdoa.gif";
+import MenggambarImg from "../img/menggambar.gif"; // Pastikan path gambarnya sesuai
 
-const BerdoaActivity = ({
+const MenggambarActivity = ({
   durationInSeconds = 10,
   happinessGain = 20,
+  energyLoss = 10,
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
@@ -17,7 +18,7 @@ const BerdoaActivity = ({
   const [countdown, setCountdown] = useState(durationInSeconds);
 
   useEffect(() => {
-    console.log("BerdoaActivity mounted, starting countdown:", durationInSeconds);
+    console.log("MenggambarActivity mounted, starting countdown:", durationInSeconds);
     const interval = setInterval(() => {
       setCountdown((prev) => {
         const next = Math.max(prev - 1, 0);
@@ -27,11 +28,11 @@ const BerdoaActivity = ({
     }, 1000);
     return () => {
       clearInterval(interval);
-      console.log("BerdoaActivity unmounted, interval cleared");
+      console.log("MenggambarActivity unmounted, interval cleared");
     };
   }, [durationInSeconds]);
 
-  // Handler untuk tombol Fast Forward
+  // Fast Forward handler
   const handleFastForward = () => {
     console.log("Fast Forward pressed, countdown set to 0");
     setCountdown(0);
@@ -46,7 +47,7 @@ const BerdoaActivity = ({
     if (setProgressBarWidth) setProgressBarWidth(`${(countdown / safeDuration) * 100}%`);
 
     if (countdown === 0) {
-      console.log("Countdown reached zero, updating happiness and showing popup");
+      console.log("Countdown reached zero, updating status and showing popup");
 
       if (onComplete) {
         console.log("Calling onComplete callback");
@@ -54,7 +55,7 @@ const BerdoaActivity = ({
       }
 
       setPopupInfo({
-        text: `Berdoa selesai! Happiness +${happinessGain}`,
+        text: `Menggambar selesai! Happiness +${happinessGain}, Energy -${energyLoss}`,
         backgroundColor: "#000",
         color: "#FFFF00",
         position: { x: 300, y: 150 },
@@ -67,13 +68,16 @@ const BerdoaActivity = ({
         setShowGameScreen(true);
         setShowTempleGame(false);
         setActionContent(null);
+        if (onComplete) onComplete();
       }, 2000);
     }
   }, [
     countdown,
     durationInSeconds,
     happinessGain,
+    energyLoss,
     maxStatus.happiness,
+    maxStatus.energy,
     onComplete,
     setPopupInfo,
     setStatusLevels,
@@ -105,11 +109,11 @@ const BerdoaActivity = ({
         userSelect: "none",
       }}
     >
-      <p style={{ fontSize: 26, marginBottom: 15 }}>Sedang berdoa...</p>
+      <p style={{ fontSize: 26, marginBottom: 15 }}>Sedang menggambar candi...</p>
 
       <img
-        src={BerdoaImg}
-        alt="Berdoa"
+        src={MenggambarImg}
+        alt="Menggambar Candi"
         style={{
           width: 160,
           maxWidth: "80%",
@@ -143,7 +147,6 @@ const BerdoaActivity = ({
         {isNaN(countdown) ? "0" : countdown} detik
       </p>
 
-      {/* Tombol Fast Forward */}
       <button
         onClick={handleFastForward}
         style={{
@@ -165,4 +168,4 @@ const BerdoaActivity = ({
   );
 };
 
-export default BerdoaActivity;
+export default MenggambarActivity;
