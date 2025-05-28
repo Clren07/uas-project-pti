@@ -450,8 +450,6 @@ return (
                 left: loc.x,
                 width: loc.width,
                 height: loc.height,
-                border: "2px solid red",
-                backgroundColor: "rgba(255, 0, 0, 0.15)",
                 pointerEvents: "none",
                 zIndex: 5,
               }}
