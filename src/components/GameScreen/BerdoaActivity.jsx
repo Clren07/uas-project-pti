@@ -1,79 +1,134 @@
-// BerdoaActivity.jsx
-
 import React, { useState, useEffect } from "react";
+import BerdoaImg from "../img/berdoa.gif";
 
 const BerdoaActivity = ({
-  durationInSeconds,
-  happinessGain,
+  durationInSeconds = 5,
+  happinessGain = 20,
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
+  setShowTempleGame,
   setActionContent,
+  setPopupInfo,
   setCountdownText,
-  setProgressBarWidth
+  setProgressBarWidth,
+  onComplete,
 }) => {
   const [countdown, setCountdown] = useState(durationInSeconds);
 
   useEffect(() => {
+    console.log("BerdoaActivity mounted, starting countdown:", durationInSeconds);
     const interval = setInterval(() => {
-      setCountdown((prev) => {
-        const newCountdown = prev - 1;
-        setCountdownText(`${newCountdown} detik`);
-        const progress = (newCountdown / durationInSeconds) * 100;
-        setProgressBarWidth(`${progress}%`);
-        return newCountdown;
+      setCountdown(prev => {
+        const next = Math.max(prev - 1, 0);
+        console.log("Countdown updated:", next);
+        return next;
       });
     }, 1000);
-
-    if (countdown <= 0) {
+    return () => {
       clearInterval(interval);
-      setActionContent(
-        <div style={{ textAlign: "center", fontSize: "20px", color: "#fff" }}>
-          <p>Berdoa selesai! Happiness +{happinessGain}</p>
-        </div>
-      );
+      console.log("BerdoaActivity unmounted, interval cleared");
+    };
+  }, []);
 
-      setStatusLevels((prev) => ({
+  useEffect(() => {
+    const safeDuration = durationInSeconds || 1;
+
+    console.log(`Updating countdown text and progress bar: ${countdown} / ${safeDuration}`);
+
+    if (setCountdownText) setCountdownText(`${isNaN(countdown) ? 0 : countdown} detik`);
+    if (setProgressBarWidth) setProgressBarWidth(`${(countdown / safeDuration) * 100}%`);
+
+    if (countdown === 0) {
+      console.log("Countdown reached zero, updating happiness and showing popup");
+
+      setStatusLevels(prev => ({
         ...prev,
-        happiness: Math.min(maxStatus, prev.happiness + happinessGain),
+        happiness: Math.min(maxStatus.happiness, (prev.happiness || 0) + happinessGain),
       }));
 
-      setTimeout(() => {
-        setShowGameScreen(true);
-      }, 2000); // Delay untuk memberikan waktu sebelum kembali ke GameScreen
-    }
+      if (onComplete) {
+        console.log("Calling onComplete callback");
+        onComplete();
+      }
 
-    return () => clearInterval(interval);
-  }, [countdown, durationInSeconds, happinessGain, setStatusLevels, maxStatus, setActionContent, setCountdownText, setProgressBarWidth, setShowGameScreen]);
+      setPopupInfo({
+        text: `Berdoa selesai! Happiness +${happinessGain}`,
+        backgroundColor: "#000",
+        color: "#FFFF00",
+        position: { x: 300, y: 150 },
+        visible: true,
+      });
+
+      setTimeout(() => {
+        console.log("Hiding popup and switching screen back to game");
+        setPopupInfo(prev => ({ ...prev, visible: false }));
+        setShowGameScreen(true);
+        setShowTempleGame(false);
+        setActionContent(null);
+      }, 2000);
+    }
+  }, [countdown]);
 
   return (
     <div
-      id="berdoa-container"
       style={{
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "90vw",
+        maxWidth: 500,
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
+        borderRadius: 15,
+        padding: 30,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999,
+        color: "white",
         textAlign: "center",
-        padding: "20px",
-        backgroundColor: "rgba(0,0,0,0.7)",
-        borderRadius: "12px",
-        color: "#fff",
-        width: "80%",
-        maxWidth: "500px",
-        margin: "0 auto",
+        fontFamily: "sans-serif",
+        userSelect: "none",
       }}
     >
+      <p style={{ fontSize: 26, marginBottom: 15 }}>Sedang berdoa...</p>
+
       <img
-        src="img/berdoa.png"
+        src={BerdoaImg}
         alt="Berdoa"
-        style={{ width: "200px", borderRadius: "12px", marginBottom: "20px" }}
+        style={{
+          width: 160,
+          maxWidth: "80%",
+          borderRadius: 12,
+          marginBottom: 20,
+        }}
       />
-      <h2>Berdoa</h2>
-      <div style={{ width: "100%", backgroundColor: "#eee", height: "20px", borderRadius: "10px", marginTop: "10px" }}>
+
+      <div
+        style={{
+          width: "100%",
+          backgroundColor: "#444",
+          height: 20,
+          borderRadius: 10,
+          marginBottom: 12,
+          overflow: "hidden",
+        }}
+      >
         <div
-          id="meditasi-progress"
-          style={{ height: "100%", width: `${(countdown / durationInSeconds) * 100}%`, backgroundColor: "#76c7c0", borderRadius: "10px" }}
-        ></div>
+          style={{
+            height: "100%",
+            width: `${(countdown / (durationInSeconds || 1)) * 100}%`,
+            backgroundColor: "#76c7c0",
+            transition: "width 0.5s ease",
+            borderRadius: 10,
+          }}
+        />
       </div>
-      <p id="meditasi-countdown" style={{ marginTop: "10px", fontSize: "18px" }}>
-        {countdown} detik
+
+      <p style={{ fontSize: 20, margin: 0 }}>
+        {isNaN(countdown) ? "0" : countdown} detik
       </p>
     </div>
   );

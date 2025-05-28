@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import TopBar from "../TopBar/TopBar";
 import StatusBars from "../StatusBars/StatusBars";
-import GameArea from "../GameArea/GameArea";
-import BerdoaActivity from "./BerdoaActivity";  // Import Komponen BerdoaActivity
+import GameArea from "../GameArea/GameArea"  // Import Komponen BerdoaActivity
 import "./GameScreen.css";
 import bgGame from "../img/backgroundGameArea.png";
 import TempleCleaningGame from "./TempleCleaningGame"; 
-
+import TempleBackground from "../img/temple.png";
+import BerdoaActivity from "./BerdoaActivity";
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
 import tas from '../img/tas.png';
 import bebek from '../img/bebek.png';
 import cincin from '../img/cincin.png';
-
 
 const GameScreen = ({ playerData, returnToHome }) => {
   const [showGameScreen, setShowGameScreen] = useState(true);
@@ -25,10 +24,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
     hygiene: 250,
     money: 230000,
   });
-
-  const startTempleCleaning = () => {
-    setShowTempleGame(true);
-  };
 
   const [popupInfo, setPopupInfo] = useState({
     text: "",
@@ -56,7 +51,13 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const playerRef = useRef(null);
   const gameAreaRef = useRef(null);
 
-  const maxStatus = 500;
+  const maxStatus = {
+  hunger: 500,
+  energy: 500,
+  happiness: 500,
+  hygiene: 500,
+  };
+
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const [items, setItems] = useState({
@@ -75,8 +76,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
         bunga: true, // Add bunga to the inventory
       }));
     }
-    setShowGameScreen(true); // Show the game screen again after prayer is done
-    setActionContent(null); // Remove the prayer activity content after completing it
   };
 
   const locations = [
@@ -99,43 +98,28 @@ const GameScreen = ({ playerData, returnToHome }) => {
     ],
    "The Temple": [
       { 
-        label: "Berdoa", 
-        info: "Happiness +20", 
-        action: () => {
-          setShowGameScreen(false);
-          setActionContent(
-            <BerdoaActivity
-              durationInSeconds={10} // Durasi 30 detik
-              happinessGain={20} // Happiness gain
-              setStatusLevels={setStatusLevels}
-              maxStatus={maxStatus}
-              setShowGameScreen={setShowGameScreen}
-              setActionContent={setActionContent}
-              setCountdownText={setCountdownText}
-              setProgressBarWidth={setProgressBarWidth}
-              onComplete={addBungaToItems} // Pass the addBungaToItems function here
-            />
-          );
-
-          setActionContent(null); // Remove the prayer activity content after completing it
-          setShowGameScreen(true); // Show the game screen again after prayer is done
-
-          // Show happiness message
-          setPopupInfo({
-            text: "+Happiness 20",
-            backgroundColor: "#000", 
-            color: "#FFFF00",
-            position: { x: 300, y: 150 },  // Adjust position based on your design
-            visible: true,
-          });
-
-          // Hide happiness message after 2 seconds
-          setTimeout(() => {
-            setPopupInfo(prev => ({ ...prev, visible: false }));
-          }, 2000);  // Hide after 2 seconds
-
+          label: "Berdoa",
+          info: "Happiness +20",
+          action: () => {
+            setShowGameScreen(false);
+            setShowTempleGame(true);
+            setActionContent(
+              <BerdoaActivity
+                durationInSeconds={5}
+                happinessGain={20}
+                setStatusLevels={setStatusLevels}
+                maxStatus={maxStatus}
+                setShowGameScreen={setShowGameScreen}
+                setShowTempleGame={setShowTempleGame}
+                setActionContent={setActionContent}
+                setPopupInfo={setPopupInfo}
+                setCountdownText={setCountdownText}
+                setProgressBarWidth={setProgressBarWidth}
+                onComplete={addBungaToItems}
+              />
+            );
+          },
         },
-      },
       { label: "Menggambar Candi", info: "Happiness +20, Energy -10" },
       {
         label: "Fotografi & Jual Foto",
@@ -363,6 +347,27 @@ const GameScreen = ({ playerData, returnToHome }) => {
   };
 
 return (
+    <div>
+    {showTempleGame && (
+      <div
+        id="temple-screen"
+        style={{
+          backgroundImage: `url(${TempleBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "100vw",
+          height: "105vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 10,
+          display: "block",
+        }}
+      >
+        {actionContent}
+      </div>
+    )}
     <div
       id="game-screen"
       ref={gameAreaRef}
@@ -375,7 +380,7 @@ return (
         height: "105vh",
         display: showGameScreen ? "block" : "none",
       }}
-    >
+    > 
       {actionContent ? (
         actionContent
       ) : (
@@ -446,7 +451,7 @@ return (
                 You are at {currentLocation.name.toLowerCase().replace("the ", "")}!
               </div>
 
-                <div
+              <div
                 id="action-buttons"
                 style={{ display: "flex", flexDirection: "column", gap: "8px" }}
               >
@@ -501,14 +506,15 @@ return (
                         </span>
                       )}
                     </button>
+                    
                   );
+                  
                 })}
               </div>
-              
               <div
                 style={{ marginTop: "20px", fontWeight: "bold", fontSize: "18px" }}
               >
-                ITEMS
+              ITEMS
               </div>
               <div id="items-container" className="items-container">
                 {items.bunga && (
@@ -577,18 +583,7 @@ return (
           )}
         </>
       )}
-
-      {/* Render the temple cleaning game when triggered */}
-      {showTempleGame && (
-        <TempleCleaningGame
-          hygieneGain={40}
-          energyLoss={20}
-          setStatusLevels={setStatusLevels}
-          maxStatus={maxStatus}
-          updateStatusBars={() => console.log("Updating status bars...")}
-          showTempleGame={showTempleGame}
-        />
-      )}
+    </div>
     </div>
   );
 };
