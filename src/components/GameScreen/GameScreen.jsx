@@ -12,6 +12,8 @@ import FotografiActivity from "./FotografiActivity";
 
 import CityBackground from "../img/city.png";
 import BelanjaSouvenir from "./BelanjaSouvenir";
+import MakanActivity from "./MakanActivity";
+import MembersihkanKota from "./MembersihkanKota";
 
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
@@ -109,6 +111,15 @@ const GameScreen = ({ playerData, returnToHome }) => {
     }
   };
 
+  const addCincinToItems = () => {
+    if (!items.cincin) {
+      setItems((prevItems) => ({
+        ...prevItems,
+        cincin: true, // Add cincin to the inventory
+      }));
+    }
+  };
+  
   const locations = [
     { name: "The Mountain", x: 0, y: 240, width: 130, height: 40 },
     { name: "The Temple", x: 375, y: 320, width: 130, height: 50 },
@@ -301,20 +312,103 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   const updatedLevels = {
                     ...prevLevels,
                     happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 30),
-                    money: (prevLevels.money || 0) + 10000,
+                    money: (prevLevels.money || 0) - 25000,
                   };
                   console.log("Updated Status Levels:", updatedLevels);
                   return updatedLevels;
                 });
                 resetAvatarPosition();
-                addTasToItems(); // Menambahkan souvenir ke inventory
+                addCincinToItems(); // Menambahkan cincin ke inventory
               }}
             />
           );
         }
       },
-      { label: "Makan di Restoran", info: "Hunger +50, Money -20k", hasMoney: true },
-      { label: "Volunteer Membersihkan Kota", info: "Happiness +40, Hygiene +20, Energy -30" },
+      {
+        label: "Makan di Restoran",
+        info: "Hunger +50, Money -20k",
+        hasMoney: true,
+        action: () => {
+          setShowGameScreen(false);
+          setShowCityGame(true);
+          setActionContent(
+            <MakanActivity
+              durationInSeconds={10}
+              hungerGain={50}
+              moneyLoss={20000}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowCityGame={setShowCityGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  return {
+                    ...prev,
+                    hunger: Math.min(maxStatus.hunger, prev.hunger + 50),
+                    money: (prev.money || 0) - 20000,
+                  };
+                });
+                // Bonus item saat makan
+              }}
+            />
+          );
+        }
+      },
+      {
+        label: "Volunteer Membersihkan Kota",
+        info: "Happiness +40, Hygiene +20, Energy -30",
+        action: () => {
+          setShowGameScreen(false);
+          setShowCityGame(true);
+          setActionContent(
+            <MembersihkanKota
+              durationInSeconds={10}
+              happinessGain={40}
+              hygieneGain={20}
+              energyLoss={30}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowCityGame={setShowCityGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  const updatedLevels = {
+                    ...prevLevels,
+                    happiness: Math.min(maxStatus.happiness, (prevLevels.happiness || 0) + 40),
+                    hygiene: Math.min(maxStatus.hygiene, (prevLevels.hygiene || 0) + 20),
+                    energy: Math.max(0, (prevLevels.energy || 0) - 30),
+                  };
+                  console.log("Updated Status Levels:", updatedLevels);
+                  return updatedLevels;
+                });
+      
+                setPopupInfo({
+                  text: "Kota bersih! +40 Happiness, +20 Hygiene",
+                  backgroundColor: "#009900",
+                  color: "#fff",
+                  position: { x: 300, y: 150 },
+                  visible: true,
+                });
+      
+                setTimeout(() => {
+                  setPopupInfo((prev) => ({ ...prev, visible: false }));
+                  setShowGameScreen(true);
+                  setShowCityGame(false);
+                  setActionContent(null);
+                }, 2000);
+              }}
+            />
+          );
+        }
+      }           
     ],
     "The Beach": [
       { label: "Berenang", info: "Energy -30, Happiness +20, Hygiene +10" },

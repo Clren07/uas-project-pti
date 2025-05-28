@@ -54,11 +54,6 @@ const BelanjaSouvenir = ({
       setShowGameScreen(true);
       setShowCityGame(false);
       setActionContent(null);
-      setStatusLevels((prev) => ({
-        ...prev,
-        happiness: Math.min(maxStatus.happiness, prev.happiness + happinessGain),
-        money: Math.max(0, (prev.money || 0) - moneyLoss),
-      }));
       if (onComplete) onComplete();
     }, 2000);
     return () => clearTimeout(timeout);
@@ -151,24 +146,34 @@ const BelanjaSouvenir = ({
 
   return (
     <div
-      style={{
-        fontFamily: "Poppins, sans-serif",
-        maxWidth: 400,
+    style={{
+        fontFamily: "'Comic Neue', 'Poppins', sans-serif",
+        maxWidth: "90vw",
+        maxHeight:"90vw",
+        width:"30vw",
+        height:"35vw",
         margin: "30px auto",
-        padding: 20,
-        borderRadius: 12,
-        backgroundColor: "#e9ecef",
-        boxShadow: "0 8px 25px rgb(0 0 0 / 0.12)",
-        userSelect: "none",
-      }}
+        padding: 24,
+        borderRadius: 20,
+        backgroundColor: "rgba(255, 255, 255, 0.85)",
+        boxShadow: "0 12px 30px rgba(0,0,0,0.15)",
+        textAlign: "center",
+        backdropFilter: "blur(5px)",
+    }}
     >
-      <h2 style={{ color: "#212529" }}>Belanja Souvenir!</h2>
-      <p style={{ color: "#495057" }}>Gunakan panah kiri/kanan atau tombol di bawah!</p>
+
+      <h2 style={{ 
+        fontWeight: "600",
+        fontSize: 18,
+        marginTop: 10,
+        color: "#212529" 
+        }}>Belanja Souvenir!</h2>
       <div
         style={{
           fontWeight: "600",
-          fontSize: 18,
-          marginBottom: 10,
+          fontSize: 12,
+          marginTop:5,
+          marginBottom: 5,
           color: timeLeft <= 5 ? "#dc3545" : "#212529",
           transition: "color 0.3s ease",
         }}
@@ -178,8 +183,8 @@ const BelanjaSouvenir = ({
       <div
         style={{
           fontWeight: "600",
-          fontSize: 18,
-          marginBottom: 20,
+          fontSize: 12,
+          marginBottom: 10,
           color: "#212529",
         }}
       >

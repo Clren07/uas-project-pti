@@ -1,3 +1,4 @@
+@import "tailwindcss";
 .gameScreen {
   width: 100vw;
   height: 105vh;
