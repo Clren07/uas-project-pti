@@ -242,71 +242,99 @@ const TempleCleaningGame = ({
       </div>
 
       <div
+      style={{
+        position: "relative",
+        width: 120,
+        height: 120,
+        marginTop: 25,
+        userSelect: "none",
+      }}
+    >
+      {/* Tombol Atas */}
+      <img
+        src={upIcon}
+        alt="Up"
+        role="button"
+        tabIndex={0}
         style={{
-          marginTop: 25,
-          display: "flex",
-          justifyContent: "center",
-          gap: 15,
-          userSelect: "none",
+          ...imgButtonStyle,
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width:"40px",
+          height:"40px"
         }}
-      >
-        <img
-          src={upIcon}
-          alt="Move Up"
-          role="button"
-          tabIndex={0}
-          style={imgButtonStyle}
-          onClick={() => moveAvatar("up")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              moveAvatar("up");
-            }
-          }}
-        />
-        <img
-          src={downIcon}
-          alt="Move Down"
-          role="button"
-          tabIndex={0}
-          style={imgButtonStyle}
-          onClick={() => moveAvatar("down")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              moveAvatar("down");
-            }
-          }}
-        />
-        <img
-          src={leftIcon}
-          alt="Move Left"
-          role="button"
-          tabIndex={0}
-          style={imgButtonStyle}
-          onClick={() => moveAvatar("left")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              moveAvatar("left");
-            }
-          }}
-        />
-        <img
-          src={rightIcon}
-          alt="Move Right"
-          role="button"
-          tabIndex={0}
-          style={imgButtonStyle}
-          onClick={() => moveAvatar("right")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              moveAvatar("right");
-            }
-          }}
-        />
-      </div>
+        onClick={() => moveAvatar("up")}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") moveAvatar("up");
+        }}
+      />
+
+      {/* Tombol Kiri */}
+      <img
+        src={leftIcon}
+        alt="Left"
+        role="button"
+        tabIndex={0}
+        style={{
+          ...imgButtonStyle,
+          position: "absolute",
+          top: "50%",
+          left: 0,
+          transform: "translateY(-50%)",
+          width:"40px",
+          height:"40px"
+        }}
+        onClick={() => moveAvatar("left")}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") moveAvatar("left");
+        }}
+      />
+
+      {/* Tombol Kanan */}
+      <img
+        src={rightIcon}
+        alt="Right"
+        role="button"
+        tabIndex={0}
+        style={{
+          ...imgButtonStyle,
+          position: "absolute",
+          top: "50%",
+          right: 0,
+          transform: "translateY(-50%)",
+          width:"40px",
+          height:"40px"
+        }}
+        onClick={() => moveAvatar("right")}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") moveAvatar("right");
+        }}
+      />
+
+      {/* Tombol Bawah */}
+      <img
+        src={downIcon}
+        alt="Down"
+        role="button"
+        tabIndex={0}
+        style={{
+          ...imgButtonStyle,
+          position: "absolute",
+          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width:"40px",
+          height:"40px"
+        }}
+        onClick={() => moveAvatar("down")}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") moveAvatar("down");
+        }}
+      />
+    </div>
+
 
       <button
         onClick={fastForward}
