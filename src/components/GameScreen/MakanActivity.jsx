@@ -18,25 +18,34 @@ const MakanActivity = ({
   const [countdown, setCountdown] = useState(durationInSeconds);
 
   useEffect(() => {
+    console.log("MakanActivity mounted, starting countdown:", durationInSeconds);
     const interval = setInterval(() => {
-      setCountdown((prev) => Math.max(prev - 1, 0));
+      setCountdown((prev) => {
+        const next = Math.max(prev - 1, 0);
+        console.log("Countdown updated:", next);
+        return next;
+      });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      console.log("MakanActivity unmounted, interval cleared");
+    };
   }, [durationInSeconds]);
 
   const handleFastForward = () => {
+    console.log("Fast Forward pressed, countdown set to 0");
     setCountdown(0);
   };
 
   useEffect(() => {
     const safeDuration = durationInSeconds || 1;
-    if (setCountdownText) setCountdownText(`${countdown} detik`);
-    if (setProgressBarWidth) {
-      setProgressBarWidth(`${(countdown / safeDuration) * 100}%`);
-    }
+
+    console.log(`Updating countdown and progress: ${countdown} / ${safeDuration}`);
+    if (setCountdownText) setCountdownText(`${isNaN(countdown) ? 0 : countdown} detik`);
+    if (setProgressBarWidth) setProgressBarWidth(`${(countdown / safeDuration) * 100}%`);
 
     if (countdown === 0) {
-      if (onComplete) onComplete();
+      console.log("Countdown reached zero, triggering finish");
 
       setPopupInfo({
         text: `Makan selesai! Hunger +${hungerGain}, Money -${moneyLoss / 1000}k`,
@@ -45,14 +54,21 @@ const MakanActivity = ({
         position: { x: 300, y: 150 },
         visible: true,
       });
-
+  
       setTimeout(() => {
+        console.log("Hiding popup and returning to game");
         setPopupInfo((prev) => ({ ...prev, visible: false }));
         setShowGameScreen(true);
         setShowCityGame(false);
         setActionContent(null);
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
       }, 2000);
+
     }
+    
   }, [
     countdown,
     durationInSeconds,
@@ -61,8 +77,7 @@ const MakanActivity = ({
     maxStatus,
     onComplete,
     setPopupInfo,
-    setCountdownText,
-    setProgressBarWidth,
+    setStatusLevels,
     setShowGameScreen,
     setShowCityGame,
     setActionContent,
@@ -88,6 +103,7 @@ const MakanActivity = ({
         color: "white",
         textAlign: "center",
         fontFamily: "sans-serif",
+        userSelect: "none",
       }}
     >
       <p style={{ fontSize: 26, marginBottom: 15 }}>Sedang makan di restoran...</p>
@@ -124,7 +140,9 @@ const MakanActivity = ({
         />
       </div>
 
-      <p style={{ fontSize: 20 }}>{countdown} detik</p>
+      <p style={{ fontSize: 20, margin: 0 }}>
+        {isNaN(countdown) ? "0" : countdown} detik
+      </p>
 
       <button
         onClick={handleFastForward}
@@ -136,6 +154,7 @@ const MakanActivity = ({
           border: "none",
           borderRadius: 8,
           cursor: "pointer",
+          userSelect: "none",
           fontWeight: "bold",
           color: "#000",
         }}

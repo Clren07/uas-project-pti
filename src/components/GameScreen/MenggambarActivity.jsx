@@ -49,11 +49,6 @@ const MenggambarActivity = ({
     if (countdown === 0) {
       console.log("Countdown reached zero, updating status and showing popup");
 
-      if (onComplete) {
-        console.log("Calling onComplete callback");
-        onComplete();
-      }
-
       setPopupInfo({
         text: `Menggambar selesai! Happiness +${happinessGain}, Energy -${energyLoss}`,
         backgroundColor: "#000",
@@ -68,7 +63,10 @@ const MenggambarActivity = ({
         setShowGameScreen(true);
         setShowTempleGame(false);
         setActionContent(null);
-        if (onComplete) onComplete();
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
       }, 2000);
     }
   }, [

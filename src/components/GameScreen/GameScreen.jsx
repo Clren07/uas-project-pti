@@ -346,13 +346,14 @@ const GameScreen = ({ playerData, returnToHome }) => {
               setProgressBarWidth={setProgressBarWidth}
               onComplete={() => {
                 setStatusLevels((prevLevels) => {
-                  return {
-                    ...prev,
-                    hunger: Math.min(maxStatus.hunger, prev.hunger + 50),
-                    money: (prev.money || 0) - 20000,
-                  };
+                  const updatedLevels = {
+                    ...prevLevels,
+                    hunger: Math.min(maxStatus.hunger, prevLevels.hunger + 50),
+                    money: (prevLevels.money || 0) - 20000,
+                    };
+                    console.log("Updated Status Levels:", updatedLevels); // Debugging
+                    return updatedLevels;
                 });
-                // Bonus item saat makan
               }}
             />
           );

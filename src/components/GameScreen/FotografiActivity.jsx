@@ -94,7 +94,10 @@ const FotografiActivity = ({
         setShowTempleGame(false);
         setActionContent(null);
 
-        if (onComplete) onComplete();
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
       }, 2000);
     }
   }, [

@@ -6,6 +6,7 @@ import downIcon from "../img/37.png";
 import leftIcon from "../img/36.png";
 import rightIcon from "../img/38.png";
 
+
 const GRID_SIZE = 3;
 const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
 const TOTAL_TRASH = 5;
@@ -136,7 +137,10 @@ const TempleCleaningGame = ({
         setShowTempleGame(false);
         setActionContent(null);
 
-        if (onComplete) onComplete();
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
       }, 2000);
 
       return () => clearTimeout(timer);

@@ -48,11 +48,6 @@ const BerdoaActivity = ({
     if (countdown === 0) {
       console.log("Countdown reached zero, updating happiness and showing popup");
 
-      if (onComplete) {
-        console.log("Calling onComplete callback");
-        onComplete();
-      }
-
       setPopupInfo({
         text: `Berdoa selesai! Happiness +${happinessGain}`,
         backgroundColor: "#000",
@@ -68,7 +63,11 @@ const BerdoaActivity = ({
         setShowGameScreen(true);
         setShowTempleGame(false);
         setActionContent(null);
-        if (onComplete) onComplete();
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
+  
       }, 2000);
     }
   }, [

@@ -87,7 +87,10 @@ const MembersihkanKota = ({
         setShowGameScreen(true);
         setShowCityGame(false);
         setActionContent(null);
-        if (onComplete) onComplete();
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
       }, 2000);
     }
   }, [trashList, hasCompleted]);
