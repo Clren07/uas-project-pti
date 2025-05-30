@@ -19,6 +19,9 @@ import MembersihkanKota from "./MembersihkanKota";
 import BeachBackground from "../img/beach.png";
 import BerenangActivity from "./BerenangActivity";
 
+import MountainBackground from "../img/mountain.png";
+import MendakiActivity from "./MendakiActivity";
+
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
 import tas from '../img/tas.png';
@@ -30,7 +33,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [showTempleGame, setShowTempleGame] = useState(false);
   const [showCityGame, setShowCityGame] = useState(false);
   const [showBeachGame, setShowBeachGame] = useState(false);
-
+  const [showMountainGame, setShowMountainGame] = useState(false);
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -136,7 +139,41 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
   const activities = {
     "The Mountain": [
-      { label: "Mendaki", info: "Energy -30, Happiness +20" },
+      { label: "Mendaki", 
+        info: "Energy -30, Happiness +20",
+        action: () => {
+            setShowGameScreen(false);
+            setShowMountainGame(true);
+            setActionContent(
+              <MendakiActivity
+                durationInSeconds={10}
+                happinessGain={20}
+                energyLoss={30}
+                setStatusLevels={setStatusLevels}
+                maxStatus={maxStatus}
+                setShowGameScreen={setShowGameScreen}
+                setShowMountainGame={setShowMountainGame}
+                setActionContent={setActionContent}
+                setPopupInfo={setPopupInfo}
+                setCountdownText={setCountdownText}
+                setProgressBarWidth={setProgressBarWidth}
+                onComplete={() => {
+                  // Tambah happiness dan tambahkan bunga ke items setelah berdoa selesai
+                  setStatusLevels((prevLevels) => {
+                    const updatedLevels = {
+                      ...prevLevels,
+                      // INI DOANG UBAH
+                      happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 20), // Menambahkan 20 ke happiness
+                    };
+                    console.log("Updated Status Levels:", updatedLevels); // Debugging
+                    return updatedLevels;
+                  });
+                  resetAvatarPosition(); 
+                }}
+              />
+            );
+          },
+      },
       {
         label: "Camping & Masak",
         info: "Hunger +25, Energy -30, Happiness +60, Money -15k",
@@ -703,6 +740,26 @@ return (
         id="beach-screen"
         style={{
           backgroundImage: `url(${BeachBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "100vw",
+          height: "105vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 10,
+          display: "block",
+        }}
+      >
+        {actionContent}
+      </div>
+    )}
+    {showMountainGame && (
+      <div
+        id="mountain-screen"
+        style={{
+          backgroundImage: `url(${MountainBackground})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
