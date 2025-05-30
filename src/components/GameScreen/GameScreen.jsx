@@ -19,7 +19,7 @@ import MembersihkanKota from "./MembersihkanKota";
 import BeachBackground from "../img/beach.png";
 import BerenangActivity from "./BerenangActivity";
 
-import MountainBackground from "../img/mountain.png";
+import MendakiBackground from "../img/mendaki.png";
 import MendakiActivity from "./MendakiActivity";
 
 import bunga from '../img/bunga.png';
@@ -28,12 +28,47 @@ import tas from '../img/tas.png';
 import bebek from '../img/bebek.png';
 import cincin from '../img/cincin.png';
 
+const GameOver = ({ onRestart }) => (
+  <div
+    style={{
+      position: "fixed",
+      top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: "rgba(0,0,0,0.8)",
+      color: "white",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      fontSize: 32,
+      zIndex: 10000,
+    }}
+  >
+    <p>Game Over! Semua status habis.</p>
+    <button
+      onClick={onRestart}
+      style={{
+        marginTop: 20,
+        padding: "10px 20px",
+        fontSize: 24,
+        cursor: "pointer",
+        borderRadius: 8,
+        border: "none",
+        backgroundColor: "#ff4444",
+        color: "white",
+      }}
+    >
+      Mulai Lagi
+    </button>
+  </div>
+);
+
 const GameScreen = ({ playerData, returnToHome }) => {
   const [showGameScreen, setShowGameScreen] = useState(true);
   const [showTempleGame, setShowTempleGame] = useState(false);
   const [showCityGame, setShowCityGame] = useState(false);
   const [showBeachGame, setShowBeachGame] = useState(false);
   const [showMountainGame, setShowMountainGame] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -46,6 +81,23 @@ const GameScreen = ({ playerData, returnToHome }) => {
   useEffect(() => {
     console.log("Status Levels updated:", statusLevels);  // Debugging status
   }, [statusLevels]);
+
+  useEffect(() => {
+    const semuaKosong = Object.values(statusLevels).every((nilai) => nilai <= 0);
+    if (semuaKosong) {
+      setIsGameOver(true);
+    }
+  }, [statusLevels]);
+
+  // Fungsi restart game
+  const handleRestart = () => {
+    setStatusLevels({ ...maxStatus }); // reset status ke max
+    setIsGameOver(false);
+  };
+
+  if (isGameOver) {
+    return <GameOver onRestart={handleRestart} />;
+  }
 
   const [popupInfo, setPopupInfo] = useState({
     text: "",
@@ -129,6 +181,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
     }
   };
   
+
   const locations = [
     { name: "The Mountain", x: 0, y: 240, width: 130, height: 40 },
     { name: "The Temple", x: 375, y: 320, width: 130, height: 50 },
@@ -146,7 +199,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
             setShowMountainGame(true);
             setActionContent(
               <MendakiActivity
-                durationInSeconds={10}
                 happinessGain={20}
                 energyLoss={30}
                 setStatusLevels={setStatusLevels}
@@ -162,8 +214,9 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   setStatusLevels((prevLevels) => {
                     const updatedLevels = {
                       ...prevLevels,
-                      // INI DOANG UBAH
+                      // UDAH KUUBAH (CLEREN)
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 20), // Menambahkan 20 ke happiness
+                      energy: Math.max(0, (prevLevels.energy || 0) - 30),
                     };
                     console.log("Updated Status Levels:", updatedLevels); // Debugging
                     return updatedLevels;
