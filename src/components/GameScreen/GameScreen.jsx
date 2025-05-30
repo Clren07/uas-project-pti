@@ -4,6 +4,7 @@ import StatusBars from "../StatusBars/StatusBars";
 import GameArea from "../GameArea/GameArea"  
 import "./GameScreen.css";
 import bgGame from "../img/backgroundGameArea.png";
+
 import TempleCleaningGame from "./TempleCleaningGame"; 
 import TempleBackground from "../img/temple.png";
 import BerdoaActivity from "./BerdoaActivity";
@@ -15,6 +16,9 @@ import BelanjaSouvenir from "./BelanjaSouvenir";
 import MakanActivity from "./MakanActivity";
 import MembersihkanKota from "./MembersihkanKota";
 
+import BeachBackground from "../img/beach.png";
+import BerenangActivity from "./BerenangActivity";
+
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
 import tas from '../img/tas.png';
@@ -25,6 +29,8 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [showGameScreen, setShowGameScreen] = useState(true);
   const [showTempleGame, setShowTempleGame] = useState(false);
   const [showCityGame, setShowCityGame] = useState(false);
+  const [showBeachGame, setShowBeachGame] = useState(false);
+
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -412,7 +418,41 @@ const GameScreen = ({ playerData, returnToHome }) => {
       }           
     ],
     "The Beach": [
-      { label: "Berenang", info: "Energy -30, Happiness +20, Hygiene +10" },
+      { label: "Berenang", 
+        info: "Energy -30, Happiness +20, Hygiene +10" ,
+        action: () => {
+          setShowGameScreen(false);
+          setShowBeachGame(true);
+          setActionContent(
+            <BerenangActivity
+              durationInSeconds={10}
+              happinessGain={20}
+              hygieneGain={10}
+              energyLoss={30}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowBeachGame={setShowBeachGame}
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  const updatedLevels = {
+                    ...prevLevels,
+                    happiness: Math.min(maxStatus.happiness, (prevLevels.happiness || 0) + 20),
+                    hygiene: Math.min(maxStatus.hygiene, (prevLevels.hygiene || 0) + 10),
+                    energy: Math.max(0, (prevLevels.energy || 0) - 30),
+                  };
+                  console.log("Updated Status Levels:", updatedLevels);
+                  return updatedLevels;
+                });
+              }}
+            />
+          );
+        }
+      },
       { label: "Pungut Sampah", info: "Happiness +30, Hygiene +40, Energy -20" },
       { label: "Cari Kerang Unik", info: "Happiness +15, Money +5k", hasMoney: true },
     ],
@@ -643,6 +683,26 @@ return (
         id="city-screen"
         style={{
           backgroundImage: `url(${CityBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "100vw",
+          height: "105vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 10,
+          display: "block",
+        }}
+      >
+        {actionContent}
+      </div>
+    )}
+    {showBeachGame && (
+      <div
+        id="beach-screen"
+        style={{
+          backgroundImage: `url(${BeachBackground})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
