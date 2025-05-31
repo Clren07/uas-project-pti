@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import BerdoaImg from "../img/berdoa.gif";
 
 const MendakiActivity = ({
   durationInSeconds = 10,
   happinessGain = 20,
-  energyLoss = 30,
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
@@ -15,92 +15,76 @@ const MendakiActivity = ({
   onComplete,
 }) => {
   const [countdown, setCountdown] = useState(durationInSeconds);
-  const [avatarPos, setAvatarPos] = useState({ x: 50, y: 50 });
-  const activityRef = useRef(null);
 
-  // Update countdown setiap detik
   useEffect(() => {
+    console.log("MendakiActivity mounted, starting countdown:", durationInSeconds);
     const interval = setInterval(() => {
-      setCountdown((prev) => Math.max(prev - 1, 0));
+      setCountdown((prev) => {
+        const next = Math.max(prev - 1, 0);
+        console.log("Countdown updated:", next);
+        return next;
+      });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      console.log("MendakiActivity unmounted, interval cleared");
+    };
   }, [durationInSeconds]);
 
-  // Update countdown text dan progress bar di parent
+  // Handler untuk tombol Fast Forward
+  const handleFastForward = () => {
+    console.log("Fast Forward pressed, countdown set to 0");
+    setCountdown(0);
+  };
+
   useEffect(() => {
-    if (setCountdownText)
-      setCountdownText(`${isNaN(countdown) ? 0 : countdown} detik`);
-    if (setProgressBarWidth)
-      setProgressBarWidth(`${(countdown / (durationInSeconds || 1)) * 100}%`);
+    const safeDuration = durationInSeconds || 1;
+
+    console.log(`Updating countdown text and progress bar: ${countdown} / ${safeDuration}`);
+
+    if (setCountdownText) setCountdownText(`${isNaN(countdown) ? 0 : countdown} detik`);
+    if (setProgressBarWidth) setProgressBarWidth(`${(countdown / safeDuration) * 100}%`);
 
     if (countdown === 0) {
-      // Tampilkan popup info
+      console.log("Countdown reached zero, updating happiness and showing popup");
+
       setPopupInfo({
-        text: `Mendaki selesai! Energy -${energyLoss}, Happiness +${happinessGain}`,
-        backgroundColor: "#004d00",
-        color: "#aaffaa",
+        text: `Berdoa selesai! Happiness +${happinessGain}`,
+        backgroundColor: "#000",
+        color: "#FFFF00",
         position: { x: 300, y: 150 },
         visible: true,
       });
 
+
       setTimeout(() => {
+        console.log("Hiding popup and switching screen back to game");
         setPopupInfo((prev) => ({ ...prev, visible: false }));
         setShowGameScreen(true);
         setShowMountainGame(false);
         setActionContent(null);
-        if (onComplete) onComplete();
+        if (onComplete) {
+          console.log("Calling onComplete callback");
+          onComplete();
+        }
+  
       }, 2000);
     }
   }, [
     countdown,
     durationInSeconds,
     happinessGain,
-    energyLoss,
+    maxStatus.happiness,
     onComplete,
     setPopupInfo,
+    setStatusLevels,
     setShowGameScreen,
     setShowMountainGame,
     setActionContent,
-    setCountdownText,
-    setProgressBarWidth,
   ]);
-
-  // Keyboard controls untuk menggerakkan avatar
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (countdown === 0) return; // disable saat countdown selesai
-
-      const step = 2; // persentase per langkah
-      setAvatarPos((pos) => {
-        let newX = pos.x;
-        let newY = pos.y;
-        switch (e.key) {
-          case "ArrowUp":
-            newY = Math.max(0, pos.y - step);
-            break;
-          case "ArrowDown":
-            newY = Math.min(90, pos.y + step);
-            break;
-          case "ArrowLeft":
-            newX = Math.max(0, pos.x - step);
-            break;
-          case "ArrowRight":
-            newX = Math.min(90, pos.x + step);
-            break;
-          default:
-            break;
-        }
-        return { x: newX, y: newY };
-      });
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [countdown]);
 
   return (
     <div
-      ref={activityRef}
       style={{
         position: "fixed",
         top: "50%",
@@ -108,54 +92,33 @@ const MendakiActivity = ({
         transform: "translate(-50%, -50%)",
         width: "90vw",
         maxWidth: 500,
-        height: 400,
-        backgroundColor: "rgba(34, 139, 34, 0.85)", // warna hijau gunung transparan
+        backgroundColor: "rgba(0, 0, 0, 0.75)",
         borderRadius: 15,
-        padding: 20,
+        padding: 30,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "flex-start",
+        justifyContent: "enter",
         zIndex: 9999,
         color: "white",
+        textAlign: "center",
         fontFamily: "sans-serif",
         userSelect: "none",
       }}
     >
-      <p style={{ fontSize: 26, marginBottom: 15 }}>Mendaki gunung...</p>
+      <p style={{ fontSize: 26, marginBottom: 15 }}>Sedang mendaki...</p>
 
-      {/* Area game */}
-      <div
+      <img
+        src={BerdoaImg}
+        alt="Mendaki"
         style={{
-          position: "relative",
-          backgroundColor: "#2e8b57",
+          width: 160,
+          maxWidth: "80%",
           borderRadius: 12,
-          width: "100%",
-          height: 250,
-          overflow: "hidden",
           marginBottom: 20,
-          border: "3px solid #145214",
         }}
-      >
-        {/* Avatar */}
-        <div
-          style={{
-            position: "absolute",
-            left: `${avatarPos.x}%`,
-            top: `${avatarPos.y}%`,
-            width: 40,
-            height: 40,
-            backgroundColor: "#ffcc00",
-            borderRadius: "50%",
-            border: "2px solid #aa8800",
-            transform: "translate(-50%, -50%)",
-            boxShadow: "0 0 8px #ffee77",
-          }}
-          title="Avatar Mendaki"
-        />
-      </div>
+      />
 
-      {/* Progress Bar */}
       <div
         style={{
           width: "100%",
@@ -177,10 +140,28 @@ const MendakiActivity = ({
         />
       </div>
 
-      {/* Countdown Text */}
       <p style={{ fontSize: 20, margin: 0 }}>
         {isNaN(countdown) ? "0" : countdown} detik
       </p>
+
+      {/* Tombol Fast Forward */}
+      <button
+        onClick={handleFastForward}
+        style={{
+          marginTop: 20,
+          padding: "10px 20px",
+          fontSize: 16,
+          backgroundColor: "#ffcc00",
+          border: "none",
+          borderRadius: 8,
+          cursor: "pointer",
+          userSelect: "none",
+          fontWeight: "bold",
+          color: "#000",
+        }}
+      >
+        Fast Forward
+      </button>
     </div>
   );
 };

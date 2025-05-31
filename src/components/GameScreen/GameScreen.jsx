@@ -19,7 +19,7 @@ import MembersihkanKota from "./MembersihkanKota";
 import BeachBackground from "../img/beach.png";
 import BerenangActivity from "./BerenangActivity";
 
-import MendakiBackground from "../img/mendaki.png";
+import MountainBackground from "../img/MountainBackground.png";
 import MendakiActivity from "./MendakiActivity";
 
 import bunga from '../img/bunga.png';
@@ -231,8 +231,80 @@ const GameScreen = ({ playerData, returnToHome }) => {
         label: "Camping & Masak",
         info: "Hunger +25, Energy -30, Happiness +60, Money -15k",
         hasMoney: true,
+        action: () => {
+            setShowGameScreen(false);
+            setShowMountainGame(true);
+            setActionContent(
+              <CampingActivity
+                happinessGain={60}
+                energyLoss={30}
+                moneyLoss={15}
+                hungerGain={25}
+                setStatusLevels={setStatusLevels}
+                maxStatus={maxStatus}
+                setShowGameScreen={setShowGameScreen}
+                setShowMountainGame={setShowMountainGame}
+                setActionContent={setActionContent}
+                setPopupInfo={setPopupInfo}
+                setCountdownText={setCountdownText}
+                setProgressBarWidth={setProgressBarWidth}
+                onComplete={() => {
+                  // Tambah happiness dan tambahkan bunga ke items setelah berdoa selesai
+                  setStatusLevels((prevLevels) => {
+                    const updatedLevels = {
+                      ...prevLevels,
+                      // UDAH KUUBAH (CLEREN)
+                      happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 60), // Menambahkan 60 ke happiness
+                      energy: Math.max(0, (prevLevels.energy || 0) - 30),
+                      hunger: Math.min(maxStatus.hunger, prevLevels.hunger + 25),
+                      money: Math.max(0, (prevLevels.money || 0) - 15),
+                    };
+                    console.log("Updated Status Levels:", updatedLevels); // Debugging
+                    return updatedLevels;
+                  });
+                  resetAvatarPosition(); 
+                }}
+              />
+            );
+          },
       },
-      { label: "Observasi Satwa", info: "Happiness +40, Energy -20" },
+      { 
+        label: "Observasi Satwa", 
+        info: "Happiness +40, Energy -20",
+        action: () => {
+            setShowGameScreen(false);
+            setShowMountainGame(true);
+            setActionContent(
+              <ObservasiActivity
+                happinessGain={40}
+                energyLoss={20}
+                setStatusLevels={setStatusLevels}
+                maxStatus={maxStatus}
+                setShowGameScreen={setShowGameScreen}
+                setShowMountainGame={setShowMountainGame}
+                setActionContent={setActionContent}
+                setPopupInfo={setPopupInfo}
+                setCountdownText={setCountdownText}
+                setProgressBarWidth={setProgressBarWidth}
+                onComplete={() => {
+                  // Tambah happiness dan tambahkan bunga ke items setelah berdoa selesai
+                  setStatusLevels((prevLevels) => {
+                    const updatedLevels = {
+                      ...prevLevels,
+                      // UDAH KUUBAH (CLEREN)
+                      happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 40), // Menambahkan 40 ke happiness
+                      energy: Math.max(0, (prevLevels.energy || 0) - 20),
+                    };
+                    console.log("Updated Status Levels:", updatedLevels); // Debugging
+                    return updatedLevels;
+                  });
+                  resetAvatarPosition(); 
+                }}
+              />
+            );
+          },
+
+      },
     ],
    "The Temple": [
       { 

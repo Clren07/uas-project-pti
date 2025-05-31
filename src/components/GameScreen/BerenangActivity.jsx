@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BerenangImg from "../img/ban.png";
+import BerenangImg from "../img/swimming.gif";
 
 const BerenangActivity = ({
   durationInSeconds = 10,
