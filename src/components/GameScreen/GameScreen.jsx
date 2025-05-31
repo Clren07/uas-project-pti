@@ -21,6 +21,9 @@ import BerenangActivity from "./BerenangActivity";
 
 import MountainBackground from "../img/MountainBackground.png";
 import MendakiActivity from "./MendakiActivity";
+import CampingActivity from "./CampingActivity";
+import ObservasiActivity from "./observasiActivity";
+
 
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
