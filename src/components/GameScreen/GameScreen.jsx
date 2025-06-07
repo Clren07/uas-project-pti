@@ -31,39 +31,7 @@ import tas from '../img/tas.png';
 import bebek from '../img/bebek.png';
 import cincin from '../img/cincin.png';
 
-const GameOver = ({ onRestart }) => (
-  <div
-    style={{
-      position: "fixed",
-      top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: "rgba(0,0,0,0.8)",
-      color: "white",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      fontSize: 32,
-      zIndex: 10000,
-    }}
-  >
-    <p>Game Over! Semua status habis.</p>
-    <button
-      onClick={onRestart}
-      style={{
-        marginTop: 20,
-        padding: "10px 20px",
-        fontSize: 24,
-        cursor: "pointer",
-        borderRadius: 8,
-        border: "none",
-        backgroundColor: "#ff4444",
-        color: "white",
-      }}
-    >
-      Mulai Lagi
-    </button>
-  </div>
-);
+import GameOver from "./GameOver";
 
 const GameScreen = ({ playerData, returnToHome }) => {
   const [showGameScreen, setShowGameScreen] = useState(true);
@@ -85,22 +53,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
     console.log("Status Levels updated:", statusLevels);  // Debugging status
   }, [statusLevels]);
 
-  useEffect(() => {
-    const semuaKosong = Object.values(statusLevels).every((nilai) => nilai <= 0);
-    if (semuaKosong) {
-      setIsGameOver(true);
-    }
-  }, [statusLevels]);
-
-  // Fungsi restart game
-  const handleRestart = () => {
-    setStatusLevels({ ...maxStatus }); // reset status ke max
-    setIsGameOver(false);
-  };
-
-  if (isGameOver) {
-    return <GameOver onRestart={handleRestart} />;
-  }
 
   const [popupInfo, setPopupInfo] = useState({
     text: "",
@@ -135,6 +87,24 @@ const GameScreen = ({ playerData, returnToHome }) => {
   hygiene: 500,
   };
 
+  useEffect(() => {
+    const adaYangHabis = Object.values(statusLevels).some((nilai) => nilai <= 0);
+    if (adaYangHabis) {
+      setIsGameOver(true);
+    }
+  }, [statusLevels]);
+
+  const handleRestart = () => {
+    setStatusLevels({
+      hunger: 250,
+      energy: 250,
+      happiness: 250,
+      hygiene: 250,
+      money: 230000,
+    });
+    setIsGameOver(false);
+  };
+  
   const resetAvatarPosition = () => {
     if (playerRef.current && gameAreaRef.current) {
       const gameArea = gameAreaRef.current;
@@ -902,6 +872,9 @@ return (
       >
         {actionContent}
       </div>
+    )}
+    {isGameOver && (
+      <GameOver onRestart={handleRestart} />
     )}
     <div
       id="game-screen"
