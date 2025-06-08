@@ -70,6 +70,28 @@ const ObservasiActivity = ({
       didInit.current = true;
     }
 
+    const fastForward = () => {
+    setFoundAnimals(selectedAnimals.map((a) => a.name)); // anggap semua satwa ditemukan
+    setAnimals((prevAnimals) =>
+    prevAnimals.map((animal) => ({
+      ...animal,
+      observed: selectedAnimals.some((a) => a.name === animal.name) ? true : animal.observed,
+    }))
+  );
+
+    setStatusLevels((prev) => ({
+    ...prev,
+    energy: Math.max(0, prev.energy - energyLoss),
+    happiness: Math.min(maxStatus, prev.happiness + happinessGain),
+  }));
+
+    setShowGameScreen(true);
+    setShowMountainGame(false);
+    setActionContent(null);
+    if (onComplete) onComplete();
+  };
+
+
     const keyHandler = (e) => {
       const step = 2;
       setObsX((prevX) => {
@@ -161,6 +183,7 @@ const ObservasiActivity = ({
 >
   Cari dan observasi 3 satwa: {selectedAnimals.map((a) => a.name).join(", ")}
 </div>
+
       <img
         ref={avatarRef}
         src={localStorage.getItem("selectedAvatar") || ""}
