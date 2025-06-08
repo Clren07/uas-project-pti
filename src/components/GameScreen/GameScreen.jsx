@@ -134,7 +134,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
     bebek: true,
     cincin: true,
   });
-
+  //bunga, payung, tas, bebek,cincin
   // Function to add bunga to items after praying activity is completed
   const addBungaToItems = () => {
     if (!items.bunga) {
@@ -150,6 +150,33 @@ const GameScreen = ({ playerData, returnToHome }) => {
       setItems((prevItems) => ({
         ...prevItems,
         cincin: true, // Add cincin to the inventory
+      }));
+    }
+  };
+
+  const addPayungToItems = () => {
+    if (!items.payung) {
+      setItems((prevItems) => ({
+        ...prevItems,
+        payung: true, // Add cincin to the inventory
+      }));
+    }
+  };
+
+  const addBebekToItems = () => {
+    if (!items.bebek) {
+      setItems((prevItems) => ({
+        ...prevItems,
+        bebek: true, // Add cincin to the inventory
+      }));
+    }
+  };
+
+  const addTasToItems = () => {
+    if (!items.tas) {
+      setItems((prevItems) => ({
+        ...prevItems,
+        tas: true, // Add cincin to the inventory
       }));
     }
   };
@@ -424,6 +451,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
       { label: "Mandi", info: "Hygiene +25" },
       { label: "Bersih-Bersih Rumah", info: "Hygiene +40, Energy -30" },
     ],
+
     "The City": [
       { label: "Belanja Souvenir", 
         info: "Money -25k, Happiness +30", 
@@ -455,7 +483,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   return updatedLevels;
                 });
                 resetAvatarPosition();
-                addCincinToItems(); // Menambahkan cincin ke inventory
+                addTasToItems(); // Menambahkan cincin ke inventory
               }}
             />
           );
@@ -491,6 +519,8 @@ const GameScreen = ({ playerData, returnToHome }) => {
                     console.log("Updated Status Levels:", updatedLevels); // Debugging
                     return updatedLevels;
                 });
+                resetAvatarPosition();
+                addTasToItems();
               }}
             />
           );
@@ -542,7 +572,11 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   setShowCityGame(false);
                   setActionContent(null);
                 }, 2000);
+
+                resetAvatarPosition();
+                addTasToItems();
               }}
+              
             />
           );
         }
@@ -579,6 +613,8 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   console.log("Updated Status Levels:", updatedLevels);
                   return updatedLevels;
                 });
+                resetAvatarPosition();
+                addTasToItems();
               }}
             />
           );
@@ -1017,7 +1053,7 @@ return (
               <div
                 style={{ marginTop: "20px", fontWeight: "bold", fontSize: "18px" }}
               >
-              ITEMS
+              ITEMS 
               </div>
               <div id="items-container" className="items-container">
                 {items.bunga && (
