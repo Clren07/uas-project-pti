@@ -3,7 +3,7 @@ import ayam from "../img/ayam.png";
 import deer from "../img/deer.png";
 import rabbit from "../img/rabbit.png";
 import panda from "../img/panda.png";
-import bebek from "../img/bebek.png";
+import duck from "../img/duck.png";
 import turtle from "../img/turtle.png";
 import musang from "../img/musang.png";
 
@@ -12,7 +12,7 @@ const allAnimals = [
   { name: "deer", src: deer },
   { name: "rabbit", src: rabbit },
   { name: "panda", src: panda },
-  { name: "bebek", src: bebek },
+  { name: "bebek", src: duck },
   { name: "turtle", src: turtle },
   { name: "musang", src: musang },
 ];
