@@ -33,7 +33,7 @@ const ObservasiActivity = ({
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
-  setShowTempleGame,
+  setShowMountainGame, // typo diperbaiki dari setShowMontaiinGame
   setActionContent,
   setPopupInfo,
   onComplete,
@@ -45,47 +45,50 @@ const ObservasiActivity = ({
   const [animals, setAnimals] = useState([]);
   const [obsX, setObsX] = useState(50);
   const [obsY, setObsY] = useState(10);
-  const didShowAlert = useRef(false);
+  const didInit = useRef(false); // Ganti didShowAlert dengan nama yang lebih umum
 
-useEffect(() => {
-  if (!didShowAlert.current) {
-    const randomSelected = [...allAnimals].sort(() => 0.5 - Math.random()).slice(0, 3);
-    const shuffled = [...allAnimals].sort(() => 0.5 - Math.random()).slice(0, predefinedPositions.length);
+  // Inisialisasi satwa & alert
+  useEffect(() => {
+    if (!didInit.current) {
+      const randomSelected = [...allAnimals]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+      const shuffled = [...allAnimals]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, predefinedPositions.length);
 
-    setSelectedAnimals(randomSelected);
-    setAnimals(
-      shuffled.map((animal, i) => ({
-        ...animal,
-        ...predefinedPositions[i],
-        observed: false,
-      }))
-    );
+      setSelectedAnimals(randomSelected);
+      setAnimals(
+        shuffled.map((animal, i) => ({
+          ...animal,
+          ...predefinedPositions[i],
+          observed: false,
+        }))
+      );
 
-    alert("Observasi dimulai! Temukan: " + randomSelected.map(a => a.name).join(", "));
-    didShowAlert.current = true;
-  }
+      alert("Observasi dimulai! Temukan: " + randomSelected.map((a) => a.name).join(", "));
+      didInit.current = true;
+    }
 
-  const keyHandler = (e) => {
-    setObsX((prevX) => {
+    const keyHandler = (e) => {
       const step = 2;
-      if (e.key === "ArrowLeft") return Math.max(0, prevX - step);
-      if (e.key === "ArrowRight") return Math.min(95, prevX + step);
-      return prevX;
-    });
+      setObsX((prevX) => {
+        if (e.key === "ArrowLeft") return Math.max(0, prevX - step);
+        if (e.key === "ArrowRight") return Math.min(95, prevX + step);
+        return prevX;
+      });
+      setObsY((prevY) => {
+        if (e.key === "ArrowUp") return Math.min(80, prevY + step);
+        if (e.key === "ArrowDown") return Math.max(0, prevY - step);
+        return prevY;
+      });
+    };
 
-    setObsY((prevY) => {
-      const step = 2;
-      if (e.key === "ArrowUp") return Math.min(80, prevY + step);
-      if (e.key === "ArrowDown") return Math.max(0, prevY - step);
-      return prevY;
-    });
-  };
+    window.addEventListener("keydown", keyHandler);
+    return () => window.removeEventListener("keydown", keyHandler);
+  }, []);
 
-  window.addEventListener("keydown", keyHandler);
-  return () => window.removeEventListener("keydown", keyHandler);
-}, []);
-
-
+  // Cek tabrakan saat posisi berubah
   useEffect(() => {
     const checkCollision = () => {
       const avatarRect = avatarRef.current?.getBoundingClientRect();
@@ -94,8 +97,8 @@ useEffect(() => {
       const avatarCenterX = avatarRect.left + avatarRect.width / 2;
       const avatarCenterY = avatarRect.top + avatarRect.height / 2;
 
-      setAnimals((prev) =>
-        prev.map((animal) => {
+      setAnimals((prevAnimals) =>
+        prevAnimals.map((animal) => {
           if (animal.observed) return animal;
 
           const animalElem = document.querySelector(`img[data-name='${animal.name}']`);
@@ -106,23 +109,28 @@ useEffect(() => {
           const dy = avatarCenterY - (rect.top + rect.height / 2);
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 30 && selectedAnimals.some((a) => a.name === animal.name)) {
-        const updatedFound = [...foundAnimals, animal.name];
-        setFoundAnimals(updatedFound);
+          if (distance < 30 && selectedAnimals.some((a) => a.name === animal.name)) {
+            if (!foundAnimals.includes(animal.name)) {
+              const updatedFound = [...foundAnimals, animal.name];
+              setFoundAnimals(updatedFound);
 
-        if (updatedFound.length >= 3) {
-        onComplete();
-        setShowTempleGame(false);
-        setShowGameScreen(true);
-        setStatusLevels((prev) => ({
-        ...prev,
-        energy: Math.max(0, prev.energy - energyLoss),
-        happiness: Math.min(maxStatus, prev.happiness + happinessGain),
-        }));
-    }
+              if (updatedFound.length >= 3) {
+                setTimeout(() => {
+                  setStatusLevels((prev) => ({
+                    ...prev,
+                    energy: Math.max(0, prev.energy - energyLoss),
+                    happiness: Math.min(maxStatus, prev.happiness + happinessGain),
+                  }));
+                  setShowGameScreen(true);
+                  setShowMountainGame(false);
+                  setActionContent(null);
+                  if (onComplete) onComplete();
+                }, 2000);
+              }
 
-    return { ...animal, observed: true };
-    }
+              return { ...animal, observed: true };
+            }
+          }
 
           return animal;
         })
@@ -130,13 +138,29 @@ useEffect(() => {
     };
 
     checkCollision();
-  }, [obsX, obsY]);
+  }, [obsX, obsY, selectedAnimals, foundAnimals]);
 
   return (
     <div ref={activityRef} className="activity-screen" style={{ display: "flex" }}>
-      <div id="observasi-instruksi">
-        Cari dan observasi 3 satwa: {selectedAnimals.map((a) => a.name).join(", ")}
-      </div>
+      <div
+  id="observasi-instruksi"
+  style={{
+    position: "absolute",
+    top: 20,
+    width: "100%",
+    textAlign: "center",
+    fontSize: "2.5rem",
+    fontWeight: "bold",
+    color: "white",
+    textShadow: "2px 2px 5px black",
+    userSelect: "none",
+    zIndex: 1000,
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    padding: "10px 0",
+  }}
+>
+  Cari dan observasi 3 satwa: {selectedAnimals.map((a) => a.name).join(", ")}
+</div>
       <img
         ref={avatarRef}
         src={localStorage.getItem("selectedAvatar") || ""}

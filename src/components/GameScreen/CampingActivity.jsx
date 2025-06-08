@@ -50,7 +50,7 @@ const CampingActivity = ({
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
-  setShowTempleGame,
+  setShowMountainGame,
   setActionContent,
   setPopupInfo,
   onComplete,
@@ -134,7 +134,7 @@ const CampingActivity = ({
       const timer = setTimeout(() => {
         setPopupInfo((prev) => ({ ...prev, visible: false }));
         setShowGameScreen(true);
-        setShowTempleGame(false);
+        setShowMountainGame(false);
         setActionContent(null);
 
         if (onComplete) {
@@ -154,7 +154,7 @@ const CampingActivity = ({
     setActionContent,
     setPopupInfo,
     setShowGameScreen,
-    setShowTempleGame,
+    setShowMountainGame,
     setStatusLevels,
   ]);
 
@@ -343,193 +343,3 @@ const CampingActivity = ({
 };
 
 export default CampingActivity;
-
-
-
-// import React, { useEffect, useRef, useState } from "react";
-// import firewoodImg from "../img/firewood.png";
-// import defaultAvatar from "../img/avatar.png";
-
-// const CampingActivity = ({
-//   hungerGain = 20,
-//   energyLoss = 10,
-//   happinessGain = 15,
-//   moneyLoss = 5,
-//   selectedAvatar,
-//   statusLevels,
-//   setStatusLevels,
-//   maxStatus,
-//   setPopupInfo,
-//   setShowGameScreen,
-//   setShowCampingGame,
-//   setActionContent,
-//   onComplete,
-// }) => {
-//   const [avatarX, setAvatarX] = useState(80);
-//   const [avatarY] = useState(80);
-//   const [collectedWood, setCollectedWood] = useState(0);
-//   const campingRef = useRef();
-//   const avatarRef = useRef();
-//   const requiredWood = 5;
-//   const [firewoods, setFirewoods] = useState([]);
-//   const [completed, setCompleted] = useState(false);
-
-//   useEffect(() => {
-//     generateFirewood();
-//   }, []);
-
-//   useEffect(() => {
-//     const handleKeyDown = (e) => {
-//       if (completed) return;
-//       let newX = avatarX;
-//       const step = 2;
-//       if (e.key === "ArrowLeft" && avatarX > 0) newX -= step;
-//       else if (e.key === "ArrowRight" && avatarX < 90) newX += step;
-//       setAvatarX(newX);
-//     };
-
-//     window.addEventListener("keydown", handleKeyDown);
-//     return () => window.removeEventListener("keydown", handleKeyDown);
-//   }, [avatarX, completed]);
-
-//   useEffect(() => {
-//     checkFirewoodCollision();
-//   }, [avatarX]);
-
-//   const generateFirewood = () => {
-//     const woods = [];
-//     for (let i = 0; i < 10; i++) {
-//       woods.push({ id: i, left: 5 + i * 9, collected: false });
-//     }
-//     setFirewoods(woods);
-//   };
-
-//   const checkFirewoodCollision = () => {
-//     const avatarRect = avatarRef.current?.getBoundingClientRect();
-//     const firewoodElements = document.querySelectorAll(".firewood");
-
-//     firewoodElements.forEach((fw, index) => {
-//       const fwRect = fw.getBoundingClientRect();
-//       const isColliding =
-//         avatarRect &&
-//         !(
-//           fwRect.right < avatarRect.left ||
-//           fwRect.left > avatarRect.right ||
-//           fwRect.bottom < avatarRect.top ||
-//           fwRect.top > avatarRect.bottom
-//         );
-
-//       if (isColliding && !firewoods[index].collected) {
-//         const newFirewoods = [...firewoods];
-//         newFirewoods[index].collected = true;
-//         setFirewoods(newFirewoods);
-//         setCollectedWood((prev) => prev + 1);
-//       }
-//     });
-//   };
-
-//   useEffect(() => {
-//     if (collectedWood >= requiredWood && !completed) {
-//       setCompleted(true);
-//       setTimeout(() => {
-//         alert("Kamu berhasil membuat api unggun🔥!");
-//         cleanupCamping();
-//       }, 300);
-//     }
-//   }, [collectedWood]);
-
-//   const cleanupCamping = () => {
-//     const hunger = hungerGain;
-//     const energy = -energyLoss;
-//     const happiness = happinessGain;
-//     const money = -moneyLoss;
-
-//     if (statusLevels.hunger <= 100 || statusLevels.energy <= 100) {
-//       alert("You cannot increase happiness when you are hungry or tired!");
-//       return;
-//     } else {
-//       setStatusLevels((prev) => ({
-//         ...prev,
-//         happiness: Math.min(maxStatus, prev.happiness + happiness),
-//         energy: Math.max(0, prev.energy + energy),
-//         money: prev.money + money,
-//       }));
-
-//       setPopupInfo({
-//         text: `Camping selesai! Happiness +${happiness}, Energy ${energy}, Money ${money}`,
-//         backgroundColor: "#000",
-//         color: "#00FF00",
-//         position: { x: 300, y: 150 },
-//         visible: true,
-//       });
-
-//       setTimeout(() => {
-//         setPopupInfo((prev) => ({ ...prev, visible: false }));
-//         setShowGameScreen(true);
-//         setShowCampingGame(false);
-//         setActionContent(null);
-//         if (onComplete) onComplete();
-//       }, 2000);
-//     }
-//   };
-
-//   return (
-//     <div
-//       ref={campingRef}
-//       style={{
-//         display: "flex",
-//         position: "relative",
-//         width: "100%",
-//         height: "100vh",
-//         backgroundColor: "#113c27",
-//         overflow: "hidden",
-//         alignItems: "center",
-//         justifyContent: "center",
-//       }}
-//     >
-//       <p
-//         style={{
-//           position: "absolute",
-//           top: 20,
-//           left: "50%",
-//           transform: "translateX(-50%)",
-//           color: "#fff",
-//           fontWeight: "bold",
-//           fontSize: "1.2rem",
-//         }}
-//       >
-//         Kumpulkan 5 kayu untuk membuat api unggun!
-//       </p>
-//       {firewoods.map((fw) => (
-//         <img
-//           key={fw.id}
-//           src={firewoodImg}
-//           className="firewood"
-//           alt="firewood"
-//           style={{
-//             position: "absolute",
-//             width: 40,
-//             bottom: "10%",
-//             left: `${fw.left}%`,
-//             opacity: fw.collected ? 0.3 : 1,
-//             transition: "opacity 0.3s ease",
-//           }}
-//         />
-//       ))}
-// <img
-//   ref={avatarRef}
-//   src={selectedAvatar || defaultAvatar}
-//   alt="avatar"
-//   style={{
-//     position: "absolute",
-//     left: `${avatarX}%`,
-//     top: `${avatarY}%`,
-//     width: 80,
-//     transition: "left 0.1s ease",
-//   }}
-// />
-//     </div>
-//   );
-// };
-
-// export default CampingActivity;
