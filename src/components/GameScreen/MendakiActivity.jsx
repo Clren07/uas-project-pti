@@ -4,6 +4,7 @@ import BerdoaImg from "../img/berdoa.gif";
 const MendakiActivity = ({
   durationInSeconds = 10,
   happinessGain = 20,
+  energyLoss= -30,
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
@@ -49,7 +50,7 @@ const MendakiActivity = ({
       console.log("Countdown reached zero, updating happiness and showing popup");
 
       setPopupInfo({
-        text: `Berdoa selesai! Happiness +${happinessGain}`,
+        text: `Mendaki selesai! Happiness +${happinessGain}, Energy -${energyLoss}`,
         backgroundColor: "#000",
         color: "#FFFF00",
         position: { x: 300, y: 150 },

@@ -183,11 +183,9 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 setCountdownText={setCountdownText}
                 setProgressBarWidth={setProgressBarWidth}
                 onComplete={() => {
-                  // Tambah happiness dan tambahkan bunga ke items setelah berdoa selesai
                   setStatusLevels((prevLevels) => {
                     const updatedLevels = {
                       ...prevLevels,
-                      // UDAH KUUBAH (CLEREN)
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 20), // Menambahkan 20 ke happiness
                       energy: Math.max(0, (prevLevels.energy || 0) - 30),
                     };
@@ -226,7 +224,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   setStatusLevels((prevLevels) => {
                     const updatedLevels = {
                       ...prevLevels,
-                      // UDAH KUUBAH (CLEREN)
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 60), // Menambahkan 60 ke happiness
                       energy: Math.max(0, (prevLevels.energy || 0) - 30),
                       hunger: Math.min(maxStatus.hunger, prevLevels.hunger + 25),
@@ -264,7 +261,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   setStatusLevels((prevLevels) => {
                     const updatedLevels = {
                       ...prevLevels,
-                      // UDAH KUUBAH (CLEREN)
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 40), // Menambahkan 40 ke happiness
                       energy: Math.max(0, (prevLevels.energy || 0) - 20),
                     };
