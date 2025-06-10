@@ -631,6 +631,21 @@ const GameScreen = ({ playerData, returnToHome }) => {
     message: "",
   });
 
+  const [tooltipVisible, setTooltipVisible] = useState(false); 
+
+  const handleExclamationHover = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPopupInfo({
+      text: "1. Items bisa didapat melalui aktivitas 2. Tukarkan items dan dapatkan +2000 money dan random bonus stats!  3. Segera tukarkan items jika ada! Items tidak akan bertambah jika di inventory sudah ada items yang sama",
+      position: { x: rect.right + 10, y: rect.top },
+      visible: true,
+    });
+  };
+
+  const handleExclamationLeave = () => {
+    setPopupInfo((prev) => ({ ...prev, visible: false }));
+  };
+
   // Handle item click to remove item
   const handleItemClick = (item) => {
     // Increase the money by 2000
@@ -1111,7 +1126,38 @@ return (
               <div
                 style={{ marginTop: "20px", fontWeight: "bold", fontSize: "18px" }}
               >
-              ITEMS 
+              <span>ITEMS</span>
+              
+              {/* Red exclamation mark with tooltip */}
+              <button
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "bold",
+                  color: "#ffffff",
+                  backgroundColor: "#ff1b1b",
+                  borderRadius: "50%",
+                  width: "20px",
+                  height: "20px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "12px",
+                  cursor: "help",
+                  border: "none",
+                  marginLeft: "6px",
+                  transition: "background-color 0.3s",
+                }}
+                onMouseEnter={handleExclamationHover}
+                onMouseLeave={handleExclamationLeave}
+              >
+                !
+              </button>
+
+              {/* Tooltip with instructions */}
+              {popupInfo.visible && (
+                <div>
+                </div>
+              )}
               </div>
               <div id="items-container" className="items-container">
                 {items.bunga && (
