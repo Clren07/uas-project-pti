@@ -76,6 +76,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [progressBarWidth, setProgressBarWidth] = useState("0%");
 
   const [actionContent, setActionContent] = useState(null);
+  const [itemsExchangedCount, setItemsExchangedCount] = useState(0);
 
   const playerRef = useRef(null);
   const gameAreaRef = useRef(null);
@@ -128,11 +129,11 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const [items, setItems] = useState({
-    bunga: true,  
-    payung: true,
-    tas: true,
-    bebek: true,
-    cincin: true,
+    bunga: false,  
+    payung: false,
+    tas: false,
+    bebek: false,
+    cincin: false,
   });
   //bunga, payung, tas, bebek,cincin
   // Function to add bunga to items after praying activity is completed
@@ -627,10 +628,45 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
   // Handle item click to remove item
   const handleItemClick = (item) => {
+    // Increase the money by 2000
+    setStatusLevels((prev) => ({
+      ...prev,
+      money: prev.money + 2000,
+    }));
+
+    // Add a random value (between 10 and 20) to a random status bar
+    const randomStatus = Math.random();
+    const randomValue = Math.floor(Math.random() * 11) + 10; // Random value between 10 and 20
+    if (randomStatus < 0.25) {
+      setStatusLevels((prev) => ({
+        ...prev,
+        happiness: Math.min(maxStatus.happiness, prev.happiness + randomValue),
+      }));
+    } else if (randomStatus < 0.5) {
+      setStatusLevels((prev) => ({
+        ...prev,
+        energy: Math.min(maxStatus.energy, prev.energy + randomValue),
+      }));
+    } else if (randomStatus < 0.75) {
+      setStatusLevels((prev) => ({
+        ...prev,
+        hygiene: Math.min(maxStatus.hygiene, prev.hygiene + randomValue),
+      }));
+    } else {
+      setStatusLevels((prev) => ({
+        ...prev,
+        hunger: Math.min(maxStatus.hunger, prev.hunger + randomValue),
+      }));
+    }
+
+    // Set item to false (hidden) when clicked
     setItems((prevItems) => ({
       ...prevItems,
-      [item]: false,  // Set item to false (hidden) when clicked
+      [item]: false,
     }));
+
+    // Increase the count of exchanged items
+    setItemsExchangedCount((prevCount) => prevCount + 1);
   };
 
   // Initialize player position
@@ -1091,6 +1127,11 @@ return (
                     onClick={() => handleItemClick("cincin")}
                   />
                 )}
+              </div>
+
+              {/* Display the number of items exchanged */}
+              <div id="items-exchanged-count">
+                <p>Items Exchanged: {itemsExchangedCount}</p>
               </div>
             </div>
           )}
