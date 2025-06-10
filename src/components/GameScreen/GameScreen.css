@@ -1,3 +1,12 @@
+body, button, .action-button, .info-icon, #popup, #popup-notification, .item-icon, #location-window {
+  font-family: "Comic Sans MS", "Arial", sans-serif;
+}
+
+/* Optional: You can also customize other text elements if needed */
+#location-title, #action-buttons, #items-exchanged-count {
+  font-family: "Comic Sans MS", "Arial", sans-serif;
+}
+
 .gameScreen {
   width: 100vw;
   height: 105vh;
@@ -152,13 +161,14 @@
     position: absolute;
     background-color: #121111;
     border: 1px solid #1b1717;
-    padding: 6px 10px;
-    font-size: 13px;
+    padding: 12px 18px;
+    font-size: 14px;
     border-radius: 15px;
     box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
     display: none;
+    white-space: pre-wrap;
     z-index: 999;
-    max-width: 200px;
+    max-width: 600px;
     color: #e5eb3e;
 }
 

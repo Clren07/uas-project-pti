@@ -636,7 +636,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const handleExclamationHover = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setPopupInfo({
-      text: "1. Items bisa didapat melalui aktivitas 2. Tukarkan items dan dapatkan +2000 money dan random bonus stats!  3. Segera tukarkan items jika ada! Items tidak akan bertambah jika di inventory sudah ada items yang sama",
+      text: `1. Items bisa didapat melalui aktivitas\n2. Tukarkan items dan dapatkan +2000 money dan random bonus stats!\n3. Segera tukarkan items jika ada! Items tidak akan bertambah jika di inventory sudah ada items yang sama`,
       position: { x: rect.right + 10, y: rect.top },
       visible: true,
     });
@@ -771,13 +771,13 @@ const GameScreen = ({ playerData, returnToHome }) => {
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
         ...prev, 
-        hunger: Math.max(0, prev.hunger - 50),
-        energy: Math.max(0, prev.energy - 50),
-        happiness: Math.max(0, prev.happiness - 50),
-        hygiene: Math.max(0, prev.hygiene - 50),
+        hunger: Math.max(0, prev.hunger - 20),
+        energy: Math.max(0, prev.energy - 20),
+        happiness: Math.max(0, prev.happiness - 20),
+        hygiene: Math.max(0, prev.hygiene - 20),
         money: prev.money,
       }));
-    }, 60000);
+    }, 80000);
 
     return () => clearInterval(statusTimer);
   }, []);
