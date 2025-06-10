@@ -184,6 +184,28 @@ const GameScreen = ({ playerData, returnToHome }) => {
     }
   };
   
+   // Handling location popup visibility
+  useEffect(() => {
+    if (!showStorePopup) {
+      // Only show location popup if store popup is not open
+      setShowLocationWindow(true);
+    } else {
+      setShowLocationWindow(false);  // Hide location popup when store is visible
+    }
+  }, [showStorePopup]); // This effect runs when showStorePopup changes
+
+  const handleStorePopupClose = () => {
+    setShowStorePopup(false);  // Close store popup
+  };
+
+  const handleStoreIconClick = () => {
+    setShowStorePopup(true);  // Open store popup
+    setShowLocationWindow(false);  // Hide location popup when store is opened
+  };
+
+  const handleLocationWindowClose = () => {
+    setShowLocationWindow(false);  // Close location window
+  };
 
   const locations = [
     { name: "The Mountain", x: 0, y: 240, width: 130, height: 40 },
@@ -1220,7 +1242,7 @@ return (
             </div>
           )}
 
-          <div id="store-icon" onClick={() => setShowStorePopup(true)}></div>
+          <div id="store-icon" onClick={handleStoreIconClick}></div>
 
           {/* Popup Notification */}
           {popupNotification.visible && (
@@ -1277,7 +1299,7 @@ return (
                 --------- STORE --------
               </div>
               <button 
-                onClick={() => setShowStorePopup(false)}
+                onClick={handleStorePopupClose}
                 style={{
                   background: 'none',
                   border: 'none',
