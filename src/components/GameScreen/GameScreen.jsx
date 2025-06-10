@@ -1425,7 +1425,7 @@ return (
                 color: "#e5eb3e",
                 zIndex: 9999,
                 pointerEvents: "none",
-                whiteSpace: "normal",
+                whiteSpace: "pre-line",
                 userSelect: "none",
                 display: "block",
               }}
