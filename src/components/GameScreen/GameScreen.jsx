@@ -626,6 +626,11 @@ const GameScreen = ({ playerData, returnToHome }) => {
     ],
   };
 
+  const [popupNotification, setPopupNotification] = useState({
+    visible: false,
+    message: "",
+  });
+
   // Handle item click to remove item
   const handleItemClick = (item) => {
     // Increase the money by 2000
@@ -637,26 +642,32 @@ const GameScreen = ({ playerData, returnToHome }) => {
     // Add a random value (between 10 and 20) to a random status bar
     const randomStatus = Math.random();
     const randomValue = Math.floor(Math.random() * 11) + 10; // Random value between 10 and 20
+    let updatedMessage = `You gained 2000 money and`;
+    
     if (randomStatus < 0.25) {
       setStatusLevels((prev) => ({
         ...prev,
         happiness: Math.min(maxStatus.happiness, prev.happiness + randomValue),
       }));
+      updatedMessage += ` +${randomValue} Happiness.`;
     } else if (randomStatus < 0.5) {
       setStatusLevels((prev) => ({
         ...prev,
         energy: Math.min(maxStatus.energy, prev.energy + randomValue),
       }));
+      updatedMessage += ` +${randomValue} Energy.`;
     } else if (randomStatus < 0.75) {
       setStatusLevels((prev) => ({
         ...prev,
         hygiene: Math.min(maxStatus.hygiene, prev.hygiene + randomValue),
       }));
+      updatedMessage += ` +${randomValue} Hygiene.`;
     } else {
       setStatusLevels((prev) => ({
         ...prev,
         hunger: Math.min(maxStatus.hunger, prev.hunger + randomValue),
       }));
+      updatedMessage += ` +${randomValue} Hunger.`;
     }
 
     // Set item to false (hidden) when clicked
@@ -667,6 +678,17 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
     // Increase the count of exchanged items
     setItemsExchangedCount((prevCount) => prevCount + 1);
+    
+    // Show the popup notification
+    setPopupNotification({
+      visible: true,
+      message: updatedMessage,
+    });
+
+    // Hide the popup after 3 seconds
+    setTimeout(() => {
+      setPopupNotification({ visible: false, message: "" });
+    }, 3000);
   };
 
   // Initialize player position
@@ -1131,8 +1153,30 @@ return (
 
               {/* Display the number of items exchanged */}
               <div id="items-exchanged-count">
-                <p>Items Exchanged: {itemsExchangedCount}</p>
+                <p>Jumlah item yang sudah ditukar: {itemsExchangedCount}</p>
               </div>
+            </div>
+          )}
+
+          {/* Popup Notification */}
+          {popupNotification.visible && (
+            <div
+              id="popup-notification"
+              style={{
+                position: "fixed",
+                bottom: "80px", // Adjusted position to be just below the status bars
+                left: "50%",
+                transform: "translateX(-50%)",
+                backgroundColor: "#000",
+                color: "#fff000",
+                padding: "10px 20px",
+                borderRadius: "15px",
+                fontSize: "16px",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
+                zIndex: 1000,
+              }}
+            >
+              {popupNotification.message}
             </div>
           )}
 
