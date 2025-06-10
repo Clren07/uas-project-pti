@@ -1222,6 +1222,28 @@ return (
 
           <div id="store-icon" onClick={() => setShowStorePopup(true)}></div>
 
+          {/* Popup Notification */}
+          {popupNotification.visible && (
+            <div
+              id="popup-notification"
+              style={{
+                position: "fixed",
+                bottom: "80px", // Adjusted position to be just below the status bars
+                left: "50%",
+                transform: "translateX(-50%)",
+                backgroundColor: "#333",
+                color: "#ffff00",
+                padding: "10px 20px",
+                borderRadius: "15px",
+                fontSize: "16px",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
+                zIndex: 1000,
+              }}
+            >
+              {popupNotification.message}
+            </div>
+          )}
+
           {/* Store Popup */}
           {showStorePopup && (
             <div
