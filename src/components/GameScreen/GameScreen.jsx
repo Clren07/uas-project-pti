@@ -1374,7 +1374,7 @@ return (
               <div>--------------------------------------------</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
-                <div style={{ marginBottom: '5px' }}>🧼 Hygiene +30</div>
+                <div style={{ marginBottom: '5px' }}>🧼 tesHygiene +30</div>
                 <button 
                   onClick={() => {
                     if (statusLevels.money >= 50000) {
