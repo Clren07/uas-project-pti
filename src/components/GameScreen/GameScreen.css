@@ -270,4 +270,26 @@ body, button, .action-button, .info-icon, #popup, #popup-notification, .item-ico
     display: none;
 }
 
+/* Store Icon Styling */
+#store-icon {
+  position: absolute;
+  top: 3.5%;
+  left: 2%;
+  width: 65px; /* Increase the size */
+  height: 65px; /* Ensure the icon is square */
+  background-image: url('../img/store.png'); /* Path to your store icon */
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(249, 222, 116, 0.372);
+  border-radius: 15%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animation for hover */
+  cursor: pointer;
+  filter: drop-shadow(0 0 8px white); /* White glow effect */
+}
+
+/* Apply a scaling effect when hovered */
+#store-icon:hover {
+  transform: scale(1.3); /* Scale up the icon */
+  filter: drop-shadow(0 0 15px white); /* Stronger glow when hovered */
+}
 

@@ -24,6 +24,7 @@ import MendakiActivity from "./MendakiActivity";
 import CampingActivity from "./CampingActivity";
 import ObservasiActivity from "./observasiActivity";
 
+import store from '../img/store.png'; 
 
 import bunga from '../img/bunga.png';
 import payung from '../img/payung.png';
@@ -77,6 +78,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
   const [actionContent, setActionContent] = useState(null);
   const [itemsExchangedCount, setItemsExchangedCount] = useState(0);
+  const [showStorePopup, setShowStorePopup] = useState(false);
 
   const playerRef = useRef(null);
   const gameAreaRef = useRef(null);
@@ -1017,6 +1019,20 @@ return (
             playerAvatar={playerData.avatar}
             onMove={movePlayer}
           />
+          {/* store */}
+          <button
+            onClick={() => setShowStorePopup(true)}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              zIndex: 100,
+            }}
+          >
+          </button>
           {locations.map((loc) => (
             <div
               key={loc.name}
@@ -1204,25 +1220,191 @@ return (
             </div>
           )}
 
-          {/* Popup Notification */}
-          {popupNotification.visible && (
+          <div id="store-icon" onClick={() => setShowStorePopup(true)}></div>
+
+          {/* Store Popup */}
+          {showStorePopup && (
             <div
-              id="popup-notification"
               style={{
-                position: "fixed",
-                bottom: "80px", // Adjusted position to be just below the status bars
-                left: "50%",
-                transform: "translateX(-50%)",
-                backgroundColor: "#000",
-                color: "#fff000",
-                padding: "10px 20px",
-                borderRadius: "15px",
-                fontSize: "16px",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
+                position: 'absolute',
+                top: '10%',
+                left: '5%',
+                width: '300px',
+                background: 'rgba(0, 0, 0, 0.6)',
+                color: 'white',
+                borderRadius: '15px',
+                padding: '20px',
+                textAlign: 'center',
                 zIndex: 1000,
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
-              {popupNotification.message}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '15px',
+              }}>
+                <div style={{
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  flex: 1,
+                }}>
+                --------- STORE --------
+              </div>
+              <button 
+                onClick={() => setShowStorePopup(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'white',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  padding: '0 5px',
+                  marginLeft: '10px',
+                  fontWeight: 'bold',
+                  transition: 'color 0.3s',
+                }}
+                onMouseEnter={(e) => e.target.color = 'red'}
+                onMouseLeave={(e) => e.target.color = 'white'}
+              >
+                ×
+              </button>
+            </div>
+            
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
+                <div style={{ marginBottom: '5px' }}>🍽️ Hunger +30</div>
+                <button 
+                  onClick={() => {
+                    if (statusLevels.money >= 50000) {
+                      setStatusLevels(prev => ({
+                        ...prev,
+                        hunger: Math.min(maxStatus.hunger, prev.hunger + 30),
+                        money: prev.money - 50000
+                      }));
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#FF6EC7',
+                    color: 'black',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '10px',
+                    width: '100%',
+                    cursor: statusLevels.money >= 50000 ? 'pointer' : 'not-allowed',
+                    opacity: statusLevels.money >= 50000 ? 1 : 0.5,
+                    marginTop: '10px',
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#FC8EAC'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6EC7'}
+                >
+                  $50000
+                </button>
+              </div>
+              <div>--------------------------------------------</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
+                <div style={{ marginBottom: '5px' }}>⚡Energy +30</div>
+                <button 
+                  onClick={() => {
+                    if (statusLevels.money >= 50000) {
+                      setStatusLevels(prev => ({
+                        ...prev,
+                        energy: Math.min(maxStatus.energy, prev.energy + 30),
+                        money: prev.money - 50000
+                      }));
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#FF6EC7',
+                    color: 'black',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '10px',
+                    width: '100%',
+                    cursor: statusLevels.money >= 50000 ? 'pointer' : 'not-allowed',
+                    opacity: statusLevels.money >= 50000 ? 1 : 0.5,
+                    marginTop: '10px',
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#FC8EAC'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6EC7'}
+                >
+                  $50000
+                </button>
+              </div>
+              <div>--------------------------------------------</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
+                <div style={{ marginBottom: '5px' }}>😊 Happiness +30</div>
+                <button 
+                  onClick={() => {
+                    if (statusLevels.money >= 50000) {
+                      setStatusLevels(prev => ({
+                        ...prev,
+                        happiness: Math.min(maxStatus.happiness, prev.happiness + 30),
+                        money: prev.money - 50000
+                      }));
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#FF6EC7',
+                    color: 'black',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '10px',
+                    width: '100%',
+                    cursor: statusLevels.money >= 50000 ? 'pointer' : 'not-allowed',
+                    opacity: statusLevels.money >= 50000 ? 1 : 0.5,
+                    marginTop: '10px',
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#FC8EAC'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6EC7'}
+                >
+                  $50000
+                </button>
+              </div>
+              <div>--------------------------------------------</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
+                <div style={{ marginBottom: '5px' }}>🧼 Hygiene +30</div>
+                <button 
+                  onClick={() => {
+                    if (statusLevels.money >= 50000) {
+                      setStatusLevels(prev => ({
+                        ...prev,
+                        hygiene: Math.min(maxStatus.hygiene, prev.hygiene + 30),
+                        money: prev.money - 50000
+                      }));
+                    }
+                  }}
+                  style={{
+                    backgroundColor: '#FF6EC7',
+                    color: 'black',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    border: 'none',
+                    borderRadius: '10px',
+                    padding: '10px',
+                    width: '100%',
+                    cursor: statusLevels.money >= 50000 ? 'pointer' : 'not-allowed',
+                    opacity: statusLevels.money >= 50000 ? 1 : 0.5,
+                    marginTop: '10px',
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#FC8EAC'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#FF6EC7'}
+                >
+                  $50000
+                </button>
+              </div>
+              <div>--------------------------------------------</div>
             </div>
           )}
 
