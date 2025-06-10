@@ -6,6 +6,7 @@ import panda from "../img/panda.png";
 import duck from "../img/duck.png";
 import turtle from "../img/turtle.png";
 import musang from "../img/musang.png";
+import avatar from "../img/avatar.png";
 
 const allAnimals = [
   { name: "ayam", src: ayam },
@@ -33,7 +34,7 @@ const ObservasiActivity = ({
   setStatusLevels,
   maxStatus,
   setShowGameScreen,
-  setShowMountainGame, // typo diperbaiki dari setShowMontaiinGame
+  setShowMountainGame,
   setActionContent,
   setPopupInfo,
   onComplete,
@@ -45,7 +46,31 @@ const ObservasiActivity = ({
   const [animals, setAnimals] = useState([]);
   const [obsX, setObsX] = useState(50);
   const [obsY, setObsY] = useState(10);
-  const didInit = useRef(false); // Ganti didShowAlert dengan nama yang lebih umum
+  const didInit = useRef(false);
+
+  // Fast Forward Function
+  const fastForward = () => {
+    setFoundAnimals(selectedAnimals.map((a) => a.name)); // semua satwa dianggap ditemukan
+    setAnimals((prevAnimals) =>
+      prevAnimals.map((animal) => ({
+        ...animal,
+        observed: selectedAnimals.some((a) => a.name === animal.name)
+          ? true
+          : animal.observed,
+      }))
+    );
+
+    setStatusLevels((prev) => ({
+      ...prev,
+      energy: Math.max(0, prev.energy - energyLoss),
+      happiness: Math.min(maxStatus, prev.happiness + happinessGain),
+    }));
+
+    setShowGameScreen(true);
+    setShowMountainGame(false);
+    setActionContent(null);
+    if (onComplete) onComplete();
+  };
 
   // Inisialisasi satwa & alert
   useEffect(() => {
@@ -66,31 +91,12 @@ const ObservasiActivity = ({
         }))
       );
 
-      alert("Observasi dimulai! Temukan: " + randomSelected.map((a) => a.name).join(", "));
+      alert(
+        "Observasi dimulai! Temukan: " +
+          randomSelected.map((a) => a.name).join(", ")
+      );
       didInit.current = true;
     }
-
-    const fastForward = () => {
-    setFoundAnimals(selectedAnimals.map((a) => a.name)); // anggap semua satwa ditemukan
-    setAnimals((prevAnimals) =>
-    prevAnimals.map((animal) => ({
-      ...animal,
-      observed: selectedAnimals.some((a) => a.name === animal.name) ? true : animal.observed,
-    }))
-  );
-
-    setStatusLevels((prev) => ({
-    ...prev,
-    energy: Math.max(0, prev.energy - energyLoss),
-    happiness: Math.min(maxStatus, prev.happiness + happinessGain),
-  }));
-
-    setShowGameScreen(true);
-    setShowMountainGame(false);
-    setActionContent(null);
-    if (onComplete) onComplete();
-  };
-
 
     const keyHandler = (e) => {
       const step = 2;
@@ -123,7 +129,9 @@ const ObservasiActivity = ({
         prevAnimals.map((animal) => {
           if (animal.observed) return animal;
 
-          const animalElem = document.querySelector(`img[data-name='${animal.name}']`);
+          const animalElem = document.querySelector(
+            `img[data-name='${animal.name}']`
+          );
           if (!animalElem) return animal;
 
           const rect = animalElem.getBoundingClientRect();
@@ -131,7 +139,10 @@ const ObservasiActivity = ({
           const dy = avatarCenterY - (rect.top + rect.height / 2);
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 30 && selectedAnimals.some((a) => a.name === animal.name)) {
+          if (
+            distance < 30 &&
+            selectedAnimals.some((a) => a.name === animal.name)
+          ) {
             if (!foundAnimals.includes(animal.name)) {
               const updatedFound = [...foundAnimals, animal.name];
               setFoundAnimals(updatedFound);
@@ -141,7 +152,10 @@ const ObservasiActivity = ({
                   setStatusLevels((prev) => ({
                     ...prev,
                     energy: Math.max(0, prev.energy - energyLoss),
-                    happiness: Math.min(maxStatus, prev.happiness + happinessGain),
+                    happiness: Math.min(
+                      maxStatus,
+                      prev.happiness + happinessGain
+                    ),
                   }));
                   setShowGameScreen(true);
                   setShowMountainGame(false);
@@ -163,30 +177,58 @@ const ObservasiActivity = ({
   }, [obsX, obsY, selectedAnimals, foundAnimals]);
 
   return (
-    <div ref={activityRef} className="activity-screen" style={{ display: "flex" }}>
-      <div
-  id="observasi-instruksi"
-  style={{
-    position: "absolute",
-    top: 20,
-    width: "100%",
-    textAlign: "center",
-    fontSize: "2.5rem",
-    fontWeight: "bold",
-    color: "white",
-    textShadow: "2px 2px 5px black",
-    userSelect: "none",
-    zIndex: 1000,
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-    padding: "10px 0",
-  }}
->
-  Cari dan observasi 3 satwa: {selectedAnimals.map((a) => a.name).join(", ")}
-</div>
+    <div
+      ref={activityRef}
+      className="activity-screen"
+      style={{ display: "flex" }}
+    >
+      {/* FAST FORWARD BUTTON */}
+      <button
+        onClick={fastForward}
+        style={{
+          position: "absolute",
+          top: "80px",
+          right: "20px",
+          zIndex: 1000,
+          padding: "10px 20px",
+          backgroundColor: "#f87171",
+          color: "white",
+          border: "none",
+          borderRadius: "10px",
+          fontSize: "1rem",
+          cursor: "pointer",
+          boxShadow: "2px 2px 5px rgba(0,0,0,0.3)",
+        }}
+      >
+        ⏩ Fast Forward
+      </button>
 
+      {/* INSTRUKSI */}
+      <div
+        id="observasi-instruksi"
+        style={{
+          position: "absolute",
+          top: 20,
+          width: "100%",
+          textAlign: "center",
+          fontSize: "2.5rem",
+          fontWeight: "bold",
+          color: "white",
+          textShadow: "2px 2px 5px black",
+          userSelect: "none",
+          zIndex: 1000,
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          padding: "10px 0",
+        }}
+      >
+        Cari dan observasi 3 satwa:{" "}
+        {selectedAnimals.map((a) => a.name).join(", ")}
+      </div>
+
+      {/* AVATAR */}
       <img
         ref={avatarRef}
-        src={localStorage.getItem("selectedAvatar") || ""}
+        src={avatar} // langsung pakai avatar.png
         alt="avatar"
         className="observasi-avatar"
         style={{
@@ -198,6 +240,8 @@ const ObservasiActivity = ({
           objectFit: "contain",
         }}
       />
+
+      {/* ANIMALS */}
       {animals.map((animal) => (
         <img
           key={animal.name}
