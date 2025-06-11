@@ -795,10 +795,10 @@ const GameScreen = ({ playerData, returnToHome }) => {
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
         ...prev, 
-        hunger: Math.max(0, prev.hunger - 20),
-        energy: Math.max(0, prev.energy - 20),
-        happiness: Math.max(0, prev.happiness - 20),
-        hygiene: Math.max(0, prev.hygiene - 20),
+        hunger: Math.max(0, prev.hunger - 25),
+        energy: Math.max(0, prev.energy - 25),
+        happiness: Math.max(0, prev.happiness - 25),
+        hygiene: Math.max(0, prev.hygiene - 25),
         money: prev.money,
       }));
     }, 80000);
