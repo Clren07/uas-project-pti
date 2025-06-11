@@ -252,6 +252,14 @@ body, button, .action-button, .info-icon, #popup, #popup-notification, .item-ico
     background-repeat: no-repeat;
     background-position: center;
     margin: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.item-icon:hover {
+  transform: scale(1.2); /* Slightly enlarge the item */
+  opacity: 0.9; /* Add a slight opacity change for hover effect */
+  cursor: pointer; /* Change mouse cursor to pointer */
 }
 
 #location-window {

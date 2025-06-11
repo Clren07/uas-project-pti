@@ -1,7 +1,7 @@
-// GameOver.jsx
 import React from "react";
+import cryingGif from "../img/crying.gif"; // Import the crying gif
 
-const GameOver = ({ onRestart }) => {
+const GameOver = ({ onContinue, onRestart }) => {
   return (
     <div
       style={{
@@ -20,21 +20,31 @@ const GameOver = ({ onRestart }) => {
         zIndex: 10000,
       }}
     >
-      <p style={{ marginBottom: 20 }}>💀 Game Over!</p>
+      <p style={{ marginBottom: 20 }}>Game Over!</p>
+      
+      {/* Display the crying GIF */}
+      <img 
+        src={cryingGif} 
+        alt="Crying" 
+        style={{ width: "200px", height: "auto", marginBottom: "20px" }} 
+      />
+
+      {/* Continue Button */}
       <button
-        onClick={onRestart}
+        onClick={onContinue}
         style={{
           padding: "12px 24px",
           fontSize: 20,
           borderRadius: 10,
           border: "none",
           cursor: "pointer",
-          backgroundColor: "#e53935",
+          backgroundColor: "#1976D2",  // Blue color for Continue button
           color: "#fff",
           boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+          marginTop: 20,
         }}
       >
-        Restart
+        Continue
       </button>
     </div>
   );

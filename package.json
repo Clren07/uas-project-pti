@@ -8,12 +8,13 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "host":"vite --host"
+    "host": "vite --host"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-player": "^2.16.0",
     "tailwindcss": "^4.1.7"
   },
   "devDependencies": {
