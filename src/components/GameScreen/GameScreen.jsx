@@ -33,6 +33,7 @@ import bebek from '../img/bebek.png';
 import cincin from '../img/cincin.png';
 
 import GameOver from "./GameOver";
+import FinalScore from "./FinalScore"; 
 
 const GameScreen = ({ playerData, returnToHome }) => {
   const [showGameScreen, setShowGameScreen] = useState(true);
@@ -41,6 +42,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [showBeachGame, setShowBeachGame] = useState(false);
   const [showMountainGame, setShowMountainGame] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [showFinalScore, setShowFinalScore] = useState(false);
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -94,8 +96,14 @@ const GameScreen = ({ playerData, returnToHome }) => {
     const adaYangHabis = Object.values(statusLevels).some((nilai) => nilai <= 0);
     if (adaYangHabis) {
       setIsGameOver(true);
+      setShowFinalScore(false); // Show the final score screen
     }
   }, [statusLevels]);
+
+  const handleContinue = () => {
+    setIsGameOver(false);  // Hide Game Over
+    setShowFinalScore(true); // Show Final Score
+  };
 
   const handleRestart = () => {
     setStatusLevels({
@@ -106,6 +114,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
       money: 230000,
     });
     setIsGameOver(false);
+    setShowFinalScore(false); 
   };
   
   const resetAvatarPosition = () => {
@@ -798,13 +807,13 @@ const GameScreen = ({ playerData, returnToHome }) => {
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
         ...prev, 
-        hunger: Math.max(0, prev.hunger - 25),
+        hunger: Math.max(0, prev.hunger - 1000),
         energy: Math.max(0, prev.energy - 25),
         happiness: Math.max(0, prev.happiness - 25),
         hygiene: Math.max(0, prev.hygiene - 25),
         money: prev.money,
       }));
-    }, 80000);
+    }, 60000);
 
     return () => clearInterval(statusTimer);
   }, []);
@@ -1005,10 +1014,23 @@ return (
         {actionContent}
       </div>
     )}
-    {isGameOver && (
-      <GameOver onRestart={handleRestart} 
-      />
+    {isGameOver && !showFinalScore && (
+      <GameOver onContinue={handleContinue} onRestart={handleRestart} />
     )}
+
+    {/* Display Final Score screen only after Continue is clicked */}
+    {showFinalScore && (
+      <FinalScore finalScore={statusLevels} onRestart={handleRestart} onReturnToHome={returnToHome} />
+    )}
+
+    {/* Game content should be displayed only when not in game over or final score */}
+    {!isGameOver && !showFinalScore && (
+      <div>
+        {/* Your main game content goes here */}
+        {/* Add more game logic and UI components here */}
+      </div>
+    )}
+    
     <div
       id="game-screen"
       ref={gameAreaRef}

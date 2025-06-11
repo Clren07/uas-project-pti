@@ -1,7 +1,6 @@
-// GameOver.jsx
 import React from "react";
 
-const GameOver = ({ onRestart }) => {
+const GameOver = ({ onContinue, onRestart }) => {
   return (
     <div
       style={{
@@ -21,7 +20,7 @@ const GameOver = ({ onRestart }) => {
       }}
     >
       <p style={{ marginBottom: 20 }}>💀 Game Over!</p>
-      <button
+      {/* <button
         onClick={onRestart}
         style={{
           padding: "12px 24px",
@@ -32,9 +31,26 @@ const GameOver = ({ onRestart }) => {
           backgroundColor: "#e53935",
           color: "#fff",
           boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+          marginBottom: 20
         }}
       >
         Restart
+      </button> */}
+      <button
+        onClick={onContinue}
+        style={{
+          padding: "12px 24px",
+          fontSize: 20,
+          borderRadius: 10,
+          border: "none",
+          cursor: "pointer",
+          backgroundColor: "#1976D2",  // Blue color for Continue button
+          color: "#fff",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+          marginTop: 20
+        }}
+      >
+        Continue
       </button>
     </div>
   );
