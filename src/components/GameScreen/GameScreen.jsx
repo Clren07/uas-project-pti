@@ -48,6 +48,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [visitedLocations, setVisitedLocations] = useState(new Set());
+  const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: 0 });
 
   const audioRef = useRef(null);
 
@@ -154,10 +155,10 @@ const GameScreen = ({ playerData, returnToHome }) => {
       const gameArea = gameAreaRef.current;
       const player = playerRef.current;
 
-      const centerX = (gameArea.offsetWidth - player.offsetWidth) / 2;
-      const centerY = (gameArea.offsetHeight - player.offsetHeight) / 2;
+      // Use the saved position for the avatar
+      const centerX = Math.min(avatarPosition.x, gameArea.offsetWidth - player.offsetWidth);
+      const centerY = Math.min(avatarPosition.y, gameArea.offsetHeight - player.offsetHeight);
 
-      // Set avatar ke posisi tengah
       player.style.left = `${centerX}px`;
       player.style.top = `${centerY}px`;
     }
@@ -693,14 +694,16 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   return updatedLevels;
                 });
                 resetAvatarPosition();
-                addTasToItems();
+                addPayungToItems();
                 incrementCompletedActivities();
               }}
             />
           );
         }
       },
-      { label: "Pungut Sampah", info: "Happiness +30, Hygiene +40, Energy -20" },
+      { label: "Pungut Sampah", 
+        info: "Happiness +30, Hygiene +40, Energy -20"
+      },
       { label: "Cari Kerang Unik", info: "Happiness +15, Money +5k", hasMoney: true },
     ],
   };
@@ -881,6 +884,9 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
     player.style.left = `${newX}px`;
     player.style.top = `${newY}px`;
+
+    // Save the new position of the avatar
+    setAvatarPosition({ x: newX, y: newY });
 
     checkCollision(newX, newY);
   };
