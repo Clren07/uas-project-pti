@@ -245,6 +245,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                     return updatedLevels;
                   });
                   resetAvatarPosition(); 
+                  addCincinToItems(); //menambahkan cincin ke inventory
                 }}
               />
             );
@@ -285,6 +286,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                     return updatedLevels;
                   });
                   resetAvatarPosition(); 
+                  addCincinToItems(); //menambahkan cincin ke inventory
                 }}
               />
             );
@@ -320,6 +322,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                     return updatedLevels;
                   });
                   resetAvatarPosition(); 
+                  addCincinToItems(); //menambahkan cincin ke inventory
                 }}
               />
             );
@@ -1003,7 +1006,8 @@ return (
       </div>
     )}
     {isGameOver && (
-      <GameOver onRestart={handleRestart} />
+      <GameOver onRestart={handleRestart} 
+      />
     )}
     <div
       id="game-screen"
