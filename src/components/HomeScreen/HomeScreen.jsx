@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import song from "../img/song.mp3"; 
+import ReactPlayer from "react-player";
 import AvatarSelector from "../AvatarSelector/AvatarSelector";
 import "./HomeScreen.css";
 import bgHome from "../img/backgroundStartScreen.png";
@@ -11,6 +13,12 @@ import Kelinci from "../img/Kelinci.png";
 import Beruang from "../img/Beruang.png";
 
 const HomeScreen = ({ startGame }) => {
+  const [audioPlaying, setAudioPlaying] = useState(false);
+
+  const handleAudioPlay = () => {
+    setAudioPlaying(true);
+  };
+
   const [playerName, setPlayerName] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState(Babi);
 
@@ -49,6 +57,18 @@ const HomeScreen = ({ startGame }) => {
         overflow: "hidden",
       }}
     >
+      {/* Tag Audio */}
+      {!audioPlaying && (
+        <ReactPlayer
+          url={song}
+          playing={true}
+          loop={true}
+          volume={0.5}
+          onReady={handleAudioPlay}  // Set audio playing when ready
+          style={{ display: 'none' }}  // Hide the player
+        />
+      )}
+
       <div className="container">
         <AvatarSelector
           selectedAvatar={selectedAvatar}

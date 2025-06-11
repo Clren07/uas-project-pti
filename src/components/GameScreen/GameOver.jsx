@@ -1,4 +1,5 @@
 import React from "react";
+import cryingGif from "../img/crying.gif"; // Import the crying gif
 
 const GameOver = ({ onContinue, onRestart }) => {
   return (
@@ -19,23 +20,16 @@ const GameOver = ({ onContinue, onRestart }) => {
         zIndex: 10000,
       }}
     >
-      <p style={{ marginBottom: 20 }}>💀 Game Over!</p>
-      {/* <button
-        onClick={onRestart}
-        style={{
-          padding: "12px 24px",
-          fontSize: 20,
-          borderRadius: 10,
-          border: "none",
-          cursor: "pointer",
-          backgroundColor: "#e53935",
-          color: "#fff",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-          marginBottom: 20
-        }}
-      >
-        Restart
-      </button> */}
+      <p style={{ marginBottom: 20 }}>Game Over!</p>
+      
+      {/* Display the crying GIF */}
+      <img 
+        src={cryingGif} 
+        alt="Crying" 
+        style={{ width: "200px", height: "auto", marginBottom: "20px" }} 
+      />
+
+      {/* Continue Button */}
       <button
         onClick={onContinue}
         style={{
@@ -47,7 +41,7 @@ const GameOver = ({ onContinue, onRestart }) => {
           backgroundColor: "#1976D2",  // Blue color for Continue button
           color: "#fff",
           boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
-          marginTop: 20
+          marginTop: 20,
         }}
       >
         Continue

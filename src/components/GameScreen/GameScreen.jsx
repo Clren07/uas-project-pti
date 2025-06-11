@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import ReactPlayer from "react-player";
+
+import song from "../img/song.mp3"; 
+
 import TopBar from "../TopBar/TopBar";
 import StatusBars from "../StatusBars/StatusBars";
 import GameArea from "../GameArea/GameArea"  
@@ -43,6 +47,23 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [showMountainGame, setShowMountainGame] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showFinalScore, setShowFinalScore] = useState(false);
+  const [visitedLocations, setVisitedLocations] = useState(new Set());
+
+  const audioRef = useRef(null);
+
+  // Start playing audio when the game loads
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.play();  // Start playing the song
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reset when the component is unmounted
+      }
+    };
+  }, []);
 
   const [statusLevels, setStatusLevels] = useState({
     hunger: 250,
@@ -80,7 +101,9 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
   const [actionContent, setActionContent] = useState(null);
   const [itemsExchangedCount, setItemsExchangedCount] = useState(0);
+  const [completedActivities, setCompletedActivities] = useState(0);
   const [showStorePopup, setShowStorePopup] = useState(false);
+  const [gameOverTriggered, setGameOverTriggered] = useState(false);
 
   const playerRef = useRef(null);
   const gameAreaRef = useRef(null);
@@ -94,11 +117,12 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
   useEffect(() => {
     const adaYangHabis = Object.values(statusLevels).some((nilai) => nilai <= 0);
-    if (adaYangHabis) {
+    if (adaYangHabis && !gameOverTriggered) { // Prevent GameOver from triggering again
       setIsGameOver(true);
       setShowFinalScore(false); // Show the final score screen
+      setGameOverTriggered(true);  // Set the flag to prevent further triggers
     }
-  }, [statusLevels]);
+  }, [statusLevels, gameOverTriggered]);
 
   const handleContinue = () => {
     setIsGameOver(false);  // Hide Game Over
@@ -115,6 +139,14 @@ const GameScreen = ({ playerData, returnToHome }) => {
     });
     setIsGameOver(false);
     setShowFinalScore(false); 
+    setCompletedActivities(0); // Reset completed activities on restart
+    setItemsExchangedCount(0); // Reset exchanged items count
+    setGameOverTriggered(false);
+  };
+
+  // Function to increment completed activities
+  const incrementCompletedActivities = () => {
+    setCompletedActivities((prev) => prev + 1);
   };
   
   const resetAvatarPosition = () => {
@@ -255,6 +287,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   });
                   resetAvatarPosition(); 
                   addCincinToItems(); //menambahkan cincin ke inventory
+                  incrementCompletedActivities();
                 }}
               />
             );
@@ -296,6 +329,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   });
                   resetAvatarPosition(); 
                   addCincinToItems(); //menambahkan cincin ke inventory
+                  incrementCompletedActivities();
                 }}
               />
             );
@@ -332,6 +366,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   });
                   resetAvatarPosition(); 
                   addCincinToItems(); //menambahkan cincin ke inventory
+                  incrementCompletedActivities();
                 }}
               />
             );
@@ -370,6 +405,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   });
                   resetAvatarPosition();
                   addBungaToItems();  // Menambahkan bunga ke inventory
+                  incrementCompletedActivities();
                 }}
               />
             );
@@ -405,6 +441,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
               });
               resetAvatarPosition();
               addBungaToItems();  // Menambahkan bunga ke inventory setelah menggambar selesai
+              incrementCompletedActivities();
             }}
             />
           );
@@ -441,6 +478,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 });
                 resetAvatarPosition();
                 addBungaToItems();  // Tambah bunga ke inventory
+                incrementCompletedActivities();
               }}
             />
           );
@@ -476,6 +514,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 });
                 resetAvatarPosition();
                 addBungaToItems();
+                incrementCompletedActivities();
               }}
             />
           );
@@ -521,6 +560,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 });
                 resetAvatarPosition();
                 addTasToItems(); // Menambahkan cincin ke inventory
+                incrementCompletedActivities();
               }}
             />
           );
@@ -558,6 +598,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 });
                 resetAvatarPosition();
                 addTasToItems();
+                incrementCompletedActivities();
               }}
             />
           );
@@ -612,6 +653,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
                 resetAvatarPosition();
                 addTasToItems();
+                incrementCompletedActivities();
               }}
               
             />
@@ -652,6 +694,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 });
                 resetAvatarPosition();
                 addTasToItems();
+                incrementCompletedActivities();
               }}
             />
           );
@@ -807,13 +850,13 @@ const GameScreen = ({ playerData, returnToHome }) => {
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
         ...prev, 
-        hunger: Math.max(0, prev.hunger - 1000),
+        hunger: Math.max(0, prev.hunger - 25),
         energy: Math.max(0, prev.energy - 25),
         happiness: Math.max(0, prev.happiness - 25),
         hygiene: Math.max(0, prev.hygiene - 25),
         money: prev.money,
       }));
-    }, 60000);
+    }, 80000);
 
     return () => clearInterval(statusTimer);
   }, []);
@@ -885,6 +928,9 @@ const GameScreen = ({ playerData, returnToHome }) => {
         setCurrentLocation(overlappingLocation);
         setShowLocationWindow(true);
         setLastLocation(overlappingLocation.name);
+
+        // Add the location to visited locations
+        setVisitedLocations((prev) => new Set(prev.add(overlappingLocation.name)));
       } else if (!showLocationWindowRef.current) {
         setShowLocationWindow(true);
       }
@@ -934,6 +980,12 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
 return (
     <div>
+    {/* Tag Audio */}
+    <audio ref={audioRef} loop>
+      <source src={song} type="audio/mp3" />
+      Your browser does not support the audio element.
+    </audio>
+    
     {showTempleGame && (
       <div
         id="temple-screen"
@@ -1014,22 +1066,23 @@ return (
         {actionContent}
       </div>
     )}
+
     {isGameOver && !showFinalScore && (
       <GameOver onContinue={handleContinue} onRestart={handleRestart} />
     )}
 
     {/* Display Final Score screen only after Continue is clicked */}
     {showFinalScore && (
-      <FinalScore finalScore={statusLevels} onRestart={handleRestart} onReturnToHome={returnToHome} />
+      <FinalScore 
+        finalScore={statusLevels} 
+        onRestart={handleRestart} 
+        completedActivities={completedActivities}  // Pass completed activities to FinalScore
+        itemsExchangedCount={itemsExchangedCount} // Pass exchanged items count to FinalScore
+        visitedLocationsCount={visitedLocations.size}  
+        onReturnToHome={returnToHome} 
+      />
     )}
 
-    {/* Game content should be displayed only when not in game over or final score */}
-    {!isGameOver && !showFinalScore && (
-      <div>
-        {/* Your main game content goes here */}
-        {/* Add more game logic and UI components here */}
-      </div>
-    )}
     
     <div
       id="game-screen"
@@ -1345,13 +1398,13 @@ return (
             </div>
             
               <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
-                <div style={{ marginBottom: '5px' }}>🍽️ Hunger +30</div>
+                <div style={{ marginBottom: '5px' }}>🍽️ Hunger +50</div>
                 <button 
                   onClick={() => {
                     if (statusLevels.money >= 50000) {
                       setStatusLevels(prev => ({
                         ...prev,
-                        hunger: Math.min(maxStatus.hunger, prev.hunger + 30),
+                        hunger: Math.min(maxStatus.hunger, prev.hunger + 50),
                         money: prev.money - 50000
                       }));
                     }
@@ -1378,13 +1431,13 @@ return (
               <div>--------------------------------------------</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
-                <div style={{ marginBottom: '5px' }}>⚡Energy +30</div>
+                <div style={{ marginBottom: '5px' }}>⚡Energy +50</div>
                 <button 
                   onClick={() => {
                     if (statusLevels.money >= 50000) {
                       setStatusLevels(prev => ({
                         ...prev,
-                        energy: Math.min(maxStatus.energy, prev.energy + 30),
+                        energy: Math.min(maxStatus.energy, prev.energy + 50),
                         money: prev.money - 50000
                       }));
                     }
@@ -1411,13 +1464,13 @@ return (
               <div>--------------------------------------------</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
-                <div style={{ marginBottom: '5px' }}>😊 Happiness +30</div>
+                <div style={{ marginBottom: '5px' }}>😊 Happiness +50</div>
                 <button 
                   onClick={() => {
                     if (statusLevels.money >= 50000) {
                       setStatusLevels(prev => ({
                         ...prev,
-                        happiness: Math.min(maxStatus.happiness, prev.happiness + 30),
+                        happiness: Math.min(maxStatus.happiness, prev.happiness + 50),
                         money: prev.money - 50000
                       }));
                     }
@@ -1444,13 +1497,13 @@ return (
               <div>--------------------------------------------</div>
               
               <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px' }}>
-                <div style={{ marginBottom: '5px' }}>🧼 tesHygiene +30</div>
+                <div style={{ marginBottom: '5px' }}>🧼 Hygiene +50</div>
                 <button 
                   onClick={() => {
                     if (statusLevels.money >= 50000) {
                       setStatusLevels(prev => ({
                         ...prev,
-                        hygiene: Math.min(maxStatus.hygiene, prev.hygiene + 30),
+                        hygiene: Math.min(maxStatus.hygiene, prev.hygiene + 50),
                         money: prev.money - 50000
                       }));
                     }

@@ -1,7 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import backgroundGameOver from "../img/backgroundGameOver.png"; // Import image
 
-const FinalScore = ({ finalScore, onRestart }) => {
+const FinalScore = ({
+  finalScore,
+  onRestart,
+  completedActivities,
+  itemsExchangedCount,
+  visitedLocationsCount,
+}) => {
+  // Calculate the total score
+  const totalStats =
+    finalScore.hunger + finalScore.energy + finalScore.happiness + finalScore.hygiene;
+  const totalScore =
+    totalStats * 0.1 +
+    finalScore.money * 0.001 +
+    completedActivities * 3 +
+    itemsExchangedCount * 2 +
+    visitedLocationsCount * 2;
+
+  // State to manage window expansion
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleSeeMoreClick = () => {
+    setIsExpanded(true); // Expand the window
+  };
+
+  const handleCloseClick = () => {
+    setIsExpanded(false); // Collapse the window
+  };
+
   return (
     <div
       style={{
@@ -29,16 +56,18 @@ const FinalScore = ({ finalScore, onRestart }) => {
           display: "flex",
           flexDirection: "column",
           position: "absolute",
-          top: "80px", // Window position
+          top: isExpanded? "40px" : "120px", // Window position
           left: "50%", // Center the window horizontally
           transform: "translateX(-50%)", // Center the window
           width: "600px",
           background: "rgba(0, 0, 0, 0.8)", // Semi-transparent black background
           color: "#FFFF00",
           borderRadius: "15px",
-          padding: "20px",
+          padding: "15px",
           textAlign: "center",
           zIndex: 100,
+          maxHeight: isExpanded ? "600px" : "550px", // Adjust size for expanded/collapsed with only 50px difference
+          overflow: "auto",
         }}
       >
         {/* Title */}
@@ -55,22 +84,102 @@ const FinalScore = ({ finalScore, onRestart }) => {
           ------ Life Satisfaction Score ------
         </div>
 
-        {/* Scores */}
-        <p style={{ margin: "5px 0", fontSize: "23px" }}>
-          <strong>Hunger: </strong>{finalScore.hunger}
+        {/* Total Score Display */}
+        <p style={{ margin: "5px 0", fontSize: "25px", color: "yellow" }}>
+          <strong>TOTAL SCORE </strong>
         </p>
-        <p style={{ margin: "5px 0", fontSize: "23px" }}>
-          <strong>Energy: </strong>{finalScore.energy}
+
+        <p style={{ margin: "5px 0", fontSize: "50px", color: "yellow" }}>
+          <strong>{totalScore.toFixed(2)}</strong>
         </p>
-        <p style={{ margin: "5px 0", fontSize: "23px" }}>
-          <strong>Happiness: </strong>{finalScore.happiness}
-        </p>
-        <p style={{ margin: "5px 0", fontSize: "23px" }}>
-          <strong>Hygiene: </strong>{finalScore.hygiene}
-        </p>
-        <p style={{ margin: "5px 0", fontSize: "23px" }}>
-          <strong>Money: </strong>{finalScore.money}
-        </p>
+
+        {/* Expanded Content */}
+        {isExpanded && (
+          <>
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Hunger: </strong>{finalScore.hunger}
+            </p>
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Energy: </strong>{finalScore.energy}
+            </p>
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Happiness: </strong>{finalScore.happiness}
+            </p>
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Hygiene: </strong>{finalScore.hygiene}
+            </p>
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Money: </strong>{finalScore.money}
+            </p>
+
+            {/* Display the number of completed activities */}
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Activities performed: </strong>{completedActivities}
+            </p>
+
+            {/* Display the number of items exchanged */}
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Items collected and used: </strong>{itemsExchangedCount}
+            </p>
+
+            <p style={{ margin: "5px 0", fontSize: "15px", color: "white" }}>
+              <strong>Variety of visited areas: </strong>{visitedLocationsCount}/5
+            </p>
+          </>
+        )}
+
+        {/* "See More" and "Close" Buttons */}
+        {!isExpanded ? (
+            <button
+                onClick={handleSeeMoreClick}
+                style={{
+                padding: "10px 20px",
+                marginTop: "15px",
+                fontSize: "18px",
+                backgroundColor: "#4CAF50", // Green color for see more
+                color: "#fff",
+                border: "none",
+                borderRadius: "10px",
+                cursor: "pointer",
+                transition: "transform 0.3s ease-in-out", // Smooth scaling effect
+                }}
+                onMouseEnter={(e) => {
+                // Scale the button when mouse enters
+                e.target.style.transform = "scale(1.03)";
+                }}
+                onMouseLeave={(e) => {
+                // Reset the scale when mouse leaves
+                e.target.style.transform = "scale(1)";
+                }}
+            >
+                See more
+            </button>
+            ) : (
+            <button
+                onClick={handleCloseClick}
+                style={{
+                padding: "10px 20px",
+                marginTop: "15px",
+                fontSize: "18px",
+                backgroundColor: "#e53935", // Red color for close
+                color: "#fff",
+                border: "none",
+                borderRadius: "10px",
+                cursor: "pointer",
+                transition: "transform 0.3s ease-in-out", // Smooth scaling effect
+                }}
+                onMouseEnter={(e) => {
+                // Scale the button when mouse enters
+                e.target.style.transform = "scale(1.03)";
+                }}
+                onMouseLeave={(e) => {
+                // Reset the scale when mouse leaves
+                e.target.style.transform = "scale(1)";
+                }}
+            >
+                Close
+            </button>
+            )}
       </div>
 
       {/* Restart Button */}
@@ -79,14 +188,14 @@ const FinalScore = ({ finalScore, onRestart }) => {
         style={{
           padding: "12px 24px",
           position: "absolute",
-          bottom: "15%",  // Adjust this value to move the button up/down
+          bottom: "15.5%",  // Adjust this value to move the button up/down
           fontSize: 20,
           borderRadius: 10,
           border: "none",
           cursor: "pointer",
           backgroundColor: "#e53935",
           color: "#fff",
-          boxShadow: "0 4px 8px rgb(255, 193, 70)",
+          boxShadow: "0 4px 8px rgba(255, 70, 70, 0.63)",
         }}
       >
         Restart
