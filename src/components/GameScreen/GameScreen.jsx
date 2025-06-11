@@ -18,6 +18,7 @@ import MembersihkanKota from "./MembersihkanKota";
 
 import BeachBackground from "../img/beach.png";
 import BerenangActivity from "./BerenangActivity";
+import CariKerangUnik from "./CariKerangUnik";
 
 import MountainBackground from "../img/MountainBackground.png";
 import MendakiActivity from "./MendakiActivity";
@@ -646,7 +647,60 @@ const GameScreen = ({ playerData, returnToHome }) => {
         }
       },
       { label: "Pungut Sampah", info: "Happiness +30, Hygiene +40, Energy -20" },
-      { label: "Cari Kerang Unik", info: "Happiness +15, Money +5k", hasMoney: true },
+      
+      { label: "Cari Kerang Unik",
+        info: "Happiness +15, Money +5k",
+        hasMoney: true,
+        action: () => {
+          setShowGameScreen(false);
+          setShowBeachGame(true); 
+          setActionContent(
+            <CariKerangUnik
+              durationInSeconds={10}
+              happinessGain={15}
+              hygieneGain={0}
+              energyLoss={0}
+              setStatusLevels={setStatusLevels}
+              maxStatus={maxStatus}
+              setShowGameScreen={setShowGameScreen}
+              setShowBeachGame={setShowBeachGame} 
+              setActionContent={setActionContent}
+              setPopupInfo={setPopupInfo}
+              setCountdownText={setCountdownText}
+              setProgressBarWidth={setProgressBarWidth}
+              onComplete={() => {
+                setStatusLevels((prevLevels) => {
+                  const updatedLevels = {
+                    ...prevLevels,
+                    happiness: Math.min(maxStatus.happiness, (prevLevels.happiness || 0) + 15),
+                    money: (prevLevels.money || 0) + 5000,
+                  };
+                  console.log("Updated Status Levels:", updatedLevels);
+                  return updatedLevels;
+                });
+
+                setPopupInfo({
+                  text: "Kerang unik ditemukan! +15 Happiness, +5000 Money",
+                  backgroundColor: "#009900",
+                  color: "#fff",
+                  position: { x: 300, y: 150 },
+                  visible: true,
+                });
+
+                setTimeout(() => {
+                  setPopupInfo((prev) => ({ ...prev, visible: false }));
+                  setShowGameScreen(true);
+                  setShowBeachGame(false); 
+                  setActionContent(null);
+                }, 2000);
+
+                resetAvatarPosition();
+                addTasToItems();
+              }}
+            />
+          );
+        }
+      }
     ],
   };
 
