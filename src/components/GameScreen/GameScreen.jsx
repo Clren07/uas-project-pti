@@ -23,6 +23,13 @@ import MembersihkanKota from "./MembersihkanKota";
 import BeachBackground from "../img/beach.png";
 import BerenangActivity from "./BerenangActivity";
 import CariKerangUnik from "./CariKerangUnik";
+import PungutSampah from "./PungutSampah";
+
+import HomeBackground from "../img/home.png";
+import Tidur from "./Tidur";
+import Mandi from "./Mandi";
+import Makan from "./Makan";
+import BersihBersihRumah from "./BersihBersihRumah";
 
 import MountainBackground from "../img/MountainBackground.png";
 import MendakiActivity from "./MendakiActivity";
@@ -45,6 +52,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [showTempleGame, setShowTempleGame] = useState(false);
   const [showCityGame, setShowCityGame] = useState(false);
   const [showBeachGame, setShowBeachGame] = useState(false);
+  const [showHomeGame, setShowHomeGame] = useState(false);
   const [showMountainGame, setShowMountainGame] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showFinalScore, setShowFinalScore] = useState(false);
@@ -524,10 +532,165 @@ const GameScreen = ({ playerData, returnToHome }) => {
       }    
     ],
     Home: [
-      { label: "Makan", info: "Hunger +50, Money -10k", hasMoney: true },
-      { label: "Tidur", info: "Energy +50" },
-      { label: "Mandi", info: "Hygiene +25" },
-      { label: "Bersih-Bersih Rumah", info: "Hygiene +40, Energy -30" },
+{
+  label: "Makan",
+  info: "Hunger +50, Money -10k",
+  hasMoney: true,
+  action: () => {
+    setShowGameScreen(false);
+    setShowHomeGame(true);
+    setActionContent(
+      <Makan
+        durationInSeconds={10}
+        hungerGain={50}
+        moneyLoss={10000}
+        setStatusLevels={setStatusLevels}
+        maxStatus={maxStatus}
+        setShowGameScreen={setShowGameScreen}
+        setShowHomeGame={setShowHomeGame}
+        setActionContent={setActionContent}
+        setPopupInfo={setPopupInfo}
+        setCountdownText={setCountdownText}
+        setProgressBarWidth={setProgressBarWidth}
+        onComplete={() => {
+          setStatusLevels((prevLevels) => {
+            const updatedLevels = {
+              ...prevLevels,
+              hunger: Math.min(maxStatus.hunger, (prevLevels.hunger || 0) + 50),
+              money: Math.max(0, (prevLevels.money || 0) - 10000),
+            };
+            console.log("Updated Status Levels:", updatedLevels);
+            return updatedLevels;
+          });
+
+          setPopupInfo({
+            text: "Makanan habis! Lapar +50, Uang -10.000",
+            backgroundColor: "#009900",
+            color: "#fff",
+            position: { x: 300, y: 150 },
+            visible: true,
+          });
+
+          setTimeout(() => {
+            setPopupInfo((prev) => ({ ...prev, visible: false }));
+            setShowGameScreen(true);
+            setShowHomeGame(false);
+            setActionContent(null);
+          }, 2000);
+
+          resetAvatarPosition();
+          addTasToItems();
+          incrementCompletedActivities();
+        }}
+      />
+    );
+  }
+ },
+  { 
+    label: "Tidur",
+    info: "Energy +50",
+    action: () => {
+      setShowGameScreen(false);
+      setShowHomeGame(true);
+      setActionContent(
+        <Tidur
+          durationInSeconds={10}
+          energyGain={50}
+          setStatusLevels={setStatusLevels}
+          maxStatus={maxStatus}
+          setShowGameScreen={setShowGameScreen}
+          setShowHomeGame={setShowHomeGame}
+          setActionContent={setActionContent}
+          setPopupInfo={setPopupInfo}
+          setCountdownText={setCountdownText}
+          setProgressBarWidth={setProgressBarWidth}
+          onComplete={() => {
+          setStatusLevels((prevLevels) => {
+            const updatedLevels = {
+              ...prevLevels,
+              energy: Math.min(maxStatus.energy, prevLevels.energy + 50),
+            };
+            console.log("Updated Status Levels:", updatedLevels);
+            return updatedLevels;
+          });
+          resetAvatarPosition();
+          addTasToItems();
+          incrementCompletedActivities();
+        }}
+      />
+    );
+  },
+ },
+{
+  label: "Mandi",
+  info: "Hygiene +25",
+  action: () => {
+    setShowGameScreen(false);
+    setShowHomeGame(true);
+    setActionContent(
+      <Mandi
+        hygieneGain={25}
+        setStatusLevels={setStatusLevels}
+        maxStatus={maxStatus}
+        setShowGameScreen={setShowGameScreen}
+        setShowHomeGame={setShowHomeGame}
+        setActionContent={setActionContent}
+        setPopupInfo={setPopupInfo}
+        setCountdownText={setCountdownText}
+        setProgressBarWidth={setProgressBarWidth}
+        onComplete={() => {
+          setStatusLevels((prevLevels) => {
+            const updatedLevels = {
+              ...prevLevels,
+              hygiene: Math.min(maxStatus.hygiene, (prevLevels.hygiene || 0) + 25)
+            };
+            console.log("Updated Status Levels:", updatedLevels);
+            return updatedLevels;
+          });
+          resetAvatarPosition();
+          addPayungToItems();
+          incrementCompletedActivities();
+        }}
+      />
+    );
+  },
+ },
+{
+  label: "Bersih-Bersih Rumah",
+  info: "Hygiene +40, Energy -30",
+  action: () => {
+    setShowGameScreen(false);
+    setShowHomeGame(true);
+    setActionContent(
+      <BersihBersihRumah
+        hygieneGain={40}
+        energyLoss={30}
+        setStatusLevels={setStatusLevels}
+        maxStatus={maxStatus}
+        setShowGameScreen={setShowGameScreen}
+        setShowHomeGame={setShowHomeGame}
+        setActionContent={setActionContent}
+        setPopupInfo={setPopupInfo}
+        setCountdownText={setCountdownText}
+        setProgressBarWidth={setProgressBarWidth}
+        onComplete={() => {
+          setStatusLevels((prevLevels) => {
+            const updatedLevels = {
+              ...prevLevels,
+              hygiene: Math.min(maxStatus.hygiene, (prevLevels.hygiene || 0) + 40),
+              energy: Math.max(0, (prevLevels.energy || 0) - 30),
+            };
+            console.log("Updated Status Levels:", updatedLevels);
+            return updatedLevels;
+          });
+          resetAvatarPosition();
+          addTasToItems();
+          incrementCompletedActivities();
+        }}
+      />
+    );
+  }
+ },
     ],
 
     "The City": [
@@ -695,14 +858,52 @@ const GameScreen = ({ playerData, returnToHome }) => {
                   return updatedLevels;
                 });
                 resetAvatarPosition();
-                addPayungToItems();
+                addBebekToItems();
                 incrementCompletedActivities();
               }}
             />
           );
         }
       },
-      { label: "Pungut Sampah", info: "Happiness +30, Hygiene +40, Energy -20" },
+
+      { label: "Pungut Sampah",
+          info: "Happiness +30, Hygiene +40, Energy -20",
+          action: () => {
+          setShowGameScreen(false);
+          setShowBeachGame(true);
+          setActionContent(
+            <PungutSampah
+            durationInSeconds={15}
+            happinessGain={30}
+            hygieneGain={40}
+            energyLoss={20}
+            setStatusLevels={setStatusLevels}
+            maxStatus={maxStatus}
+            setShowGameScreen={setShowGameScreen}
+            setShowBeachGame={setShowBeachGame}
+            setActionContent={setActionContent}
+            setPopupInfo={setPopupInfo}
+            setCountdownText={setCountdownText}
+            setProgressBarWidth={setProgressBarWidth}
+            onComplete={() => {
+            setStatusLevels((prevLevels) => {
+              const updatedLevels = {
+                ...prevLevels,
+                happiness: Math.min(maxStatus.happiness, (prevLevels.happiness || 0) + 30),
+                hygiene: Math.min(maxStatus.hygiene, (prevLevels.hygiene || 0) + 40),
+                energy: Math.max(0, (prevLevels.energy || 0) - 20),
+              };
+              console.log("Updated Status Levels:", updatedLevels);
+              return updatedLevels;
+            });
+            resetAvatarPosition();
+            addBebekToItems();
+            incrementCompletedActivities();
+        }}
+      />
+    );
+  }
+ },
       
       { label: "Cari Kerang Unik",
         info: "Happiness +15, Money +5k",
@@ -751,7 +952,8 @@ const GameScreen = ({ playerData, returnToHome }) => {
                 }, 2000);
 
                 resetAvatarPosition();
-                addTasToItems();
+                addBebekToItems();
+                incrementCompletedActivities();
               }}
             />
           );
@@ -1089,6 +1291,26 @@ return (
         id="beach-screen"
         style={{
           backgroundImage: `url(${BeachBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "100vw",
+          height: "105vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 10,
+          display: "block",
+        }}
+      >
+        {actionContent}
+      </div>
+    )}
+    {showHomeGame && (
+      <div
+        id="home-screen"
+        style={{
+          backgroundImage: `url(${HomeBackground})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
