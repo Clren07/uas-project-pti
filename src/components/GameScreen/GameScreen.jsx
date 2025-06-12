@@ -1254,7 +1254,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
 return (
     <div>
     {/* Tag Audio */}
-    <audio ref={audioRef} loop muted>
+    <audio ref={audioRef} loop >
       <source src={song} type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
