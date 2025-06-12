@@ -34,7 +34,7 @@ import BersihBersihRumah from "./BersihBersihRumah";
 import MountainBackground from "../img/MountainBackground.png";
 import MendakiActivity from "./MendakiActivity";
 import CampingActivity from "./CampingActivity";
-import ObservasiActivity from "./observasiActivity";
+import ObservasiActivity from "./ObservasiActivity";
 
 import store from '../img/store.png'; 
 
