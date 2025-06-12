@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import BerdoaImg from "../img/berdoa.gif";
+import ClimbingImg from "../img/climbing.gif";
 
 const MendakiActivity = ({
   durationInSeconds = 10,
@@ -110,7 +110,7 @@ const MendakiActivity = ({
       <p style={{ fontSize: 26, marginBottom: 15 }}>Sedang mendaki...</p>
 
       <img
-        src={BerdoaImg}
+        src={ClimbingImg}
         alt="Mendaki"
         style={{
           width: 160,
