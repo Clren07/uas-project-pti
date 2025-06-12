@@ -345,7 +345,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 60), // Menambahkan 60 ke happiness
                       energy: Math.max(0, (prevLevels.energy || 0) - 30),
                       hunger: Math.min(maxStatus.hunger, prevLevels.hunger + 25),
-                      money: Math.max(0, (prevLevels.money || 0) - 15),
+                      money: Math.max(0, (prevLevels.money || 0) - 15000),
                     };
                     console.log("Updated Status Levels:", updatedLevels); // Debugging
                     return updatedLevels;
