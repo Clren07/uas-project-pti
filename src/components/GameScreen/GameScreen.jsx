@@ -154,6 +154,12 @@ const GameScreen = ({ playerData, returnToHome }) => {
       bebek: false,
       cincin: false,
     }); 
+    setGameTime({
+      day: "Monday",
+      dayCount: 1,
+      hours: 9,
+      minutes: 0,
+    }); 
     setIsGameOver(false);
     setShowFinalScore(false); 
     setCompletedActivities(0); // Reset completed activities on restart
