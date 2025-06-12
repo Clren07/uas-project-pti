@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import avatar from "../img/avatar.png";
-import soap from "../img/soap.jpeg";  // Changed from sampah1.png to soap.jpeg
+import soap from "../img/soap.png";  // Changed from sampah1.png to soap.png
 import upIcon from "../img/35.png";
 import downIcon from "../img/37.png";
 import leftIcon from "../img/36.png";
