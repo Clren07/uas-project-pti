@@ -147,6 +147,13 @@ const GameScreen = ({ playerData, returnToHome }) => {
       hygiene: 250,
       money: 230000,
     });
+    setItems({
+      bunga: false,  
+      payung: false,
+      tas: false,
+      bebek: false,
+      cincin: false,
+    }); 
     setIsGameOver(false);
     setShowFinalScore(false); 
     setCompletedActivities(0); // Reset completed activities on restart
