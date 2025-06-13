@@ -345,7 +345,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 60), // Menambahkan 60 ke happiness
                       energy: Math.max(0, (prevLevels.energy || 0) - 30),
                       hunger: Math.min(maxStatus.hunger, prevLevels.hunger + 25),
-                      money: Math.max(0, (prevLevels.money || 0) - 15),
+                      money: Math.max(0, (prevLevels.money || 0) - 15000),
                     };
                     console.log("Updated Status Levels:", updatedLevels); // Debugging
                     return updatedLevels;
@@ -1254,7 +1254,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
 return (
     <div>
     {/* Tag Audio */}
-    <audio ref={audioRef} loop muted>
+    <audio ref={audioRef} loop >
       <source src={song} type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
@@ -1852,5 +1852,8 @@ return (
         </>
       )}
     </div>
-  </div>
-)}
+    </div>
+  );
+};
+
+export default GameScreen;
