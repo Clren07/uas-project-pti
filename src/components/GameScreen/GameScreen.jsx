@@ -140,7 +140,6 @@ const GameScreen = ({ playerData, returnToHome }) => {
   };
 
   const handleRestart = () => {
-    // Reset semua state ke kondisi awal
     setStatusLevels({
       hunger: 250,
       energy: 250,
@@ -161,18 +160,11 @@ const GameScreen = ({ playerData, returnToHome }) => {
       hours: 9,
       minutes: 0,
     }); 
-    setShowGameScreen(false);
-    setShowTempleGame(false);
-    setShowCityGame(false);
-    setShowBeachGame(false);
-    setShowHomeGame(false);
-    setShowMountainGame(false);
-    setActionContent(null); // Reset visited locations
-    
-    // Kembali ke halaman pemilihan avatar (homescreen)
-    if (typeof returnToHome === "function") {
-      returnToHome();
-    }
+    setIsGameOver(false);
+    setShowFinalScore(false); 
+    setCompletedActivities(0); // Reset completed activities on restart
+    setItemsExchangedCount(0); // Reset exchanged items count
+    setGameOverTriggered(false);
   };
 
   // Function to increment completed activities
@@ -1860,8 +1852,5 @@ return (
         </>
       )}
     </div>
-    </div>
-  );
-};
-
-export default GameScreen;
+  </div>
+)}
