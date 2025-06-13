@@ -90,11 +90,6 @@ const ObservasiActivity = ({
           observed: false,
         }))
       );
-
-      alert(
-        "Observasi dimulai! Temukan: " +
-          randomSelected.map((a) => a.name).join(", ")
-      );
       didInit.current = true;
     }
 
