@@ -140,6 +140,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   };
 
   const handleRestart = () => {
+    // Reset semua state ke kondisi awal
     setStatusLevels({
       hunger: 250,
       energy: 250,
@@ -160,11 +161,18 @@ const GameScreen = ({ playerData, returnToHome }) => {
       hours: 9,
       minutes: 0,
     }); 
-    setIsGameOver(false);
-    setShowFinalScore(false); 
-    setCompletedActivities(0); // Reset completed activities on restart
-    setItemsExchangedCount(0); // Reset exchanged items count
-    setGameOverTriggered(false);
+    setShowGameScreen(false);
+    setShowTempleGame(false);
+    setShowCityGame(false);
+    setShowBeachGame(false);
+    setShowHomeGame(false);
+    setShowMountainGame(false);
+    setActionContent(null); // Reset visited locations
+    
+    // Kembali ke halaman pemilihan avatar (homescreen)
+    if (typeof returnToHome === "function") {
+      returnToHome();
+    }
   };
 
   // Function to increment completed activities
@@ -345,7 +353,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
                       happiness: Math.min(maxStatus.happiness, prevLevels.happiness + 60), // Menambahkan 60 ke happiness
                       energy: Math.max(0, (prevLevels.energy || 0) - 30),
                       hunger: Math.min(maxStatus.hunger, prevLevels.hunger + 25),
-                      money: Math.max(0, (prevLevels.money || 0) - 15000),
+                      money: Math.max(0, (prevLevels.money || 0) - 15),
                     };
                     console.log("Updated Status Levels:", updatedLevels); // Debugging
                     return updatedLevels;
@@ -1254,7 +1262,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
 return (
     <div>
     {/* Tag Audio */}
-    <audio ref={audioRef} loop >
+    <audio ref={audioRef} loop muted>
       <source src={song} type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
