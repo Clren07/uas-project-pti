@@ -58,6 +58,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const [showFinalScore, setShowFinalScore] = useState(false);
   const [visitedLocations, setVisitedLocations] = useState(new Set());
   const [avatarPosition, setAvatarPosition] = useState({ x: 0, y: 0 });
+  const [isGameFrozen, setIsGameFrozen] = useState(false);
 
   const audioRef = useRef(null);
 
@@ -137,6 +138,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
   const handleContinue = () => {
     setIsGameOver(false);  // Hide Game Over
     setShowFinalScore(true); // Show Final Score
+    setIsGameFrozen(true); // Freeze the game state
   };
 
   const handleRestart = () => {
@@ -168,6 +170,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
     setShowHomeGame(false);
     setShowMountainGame(false);
     setActionContent(null); // Reset visited locations
+    setIsGameFrozen(false); // Unfreeze the game state
     
     // Kembali ke halaman pemilihan avatar (homescreen)
     if (typeof returnToHome === "function") {
@@ -1125,6 +1128,8 @@ const GameScreen = ({ playerData, returnToHome }) => {
 
   // Decrease status bars over time
   useEffect(() => {
+    if (isGameFrozen) return; // Don't decrease stats if the game is frozen
+
     const statusTimer = setInterval(() => {
       setStatusLevels((prev) => ({
         ...prev, 
@@ -1134,10 +1139,10 @@ const GameScreen = ({ playerData, returnToHome }) => {
         hygiene: Math.max(0, prev.hygiene - 25),
         money: prev.money,
       }));
-    }, 80000);
+    }, 30000);
 
     return () => clearInterval(statusTimer);
-  }, []);
+  }, [isGameFrozen]); // Add isGameFrozen to the dependency array
 
   const movePlayer = (x, y) => {
     if (!playerRef.current || !gameAreaRef.current) return;
@@ -1369,7 +1374,11 @@ return (
     )}
 
     {isGameOver && !showFinalScore && (
-      <GameOver onContinue={handleContinue} onRestart={handleRestart} />
+      <GameOver 
+        onContinue={handleContinue} 
+        onRestart={handleRestart} 
+        finalScore={statusLevels}
+      />
     )}
 
     {/* Display Final Score screen only after Continue is clicked */}
