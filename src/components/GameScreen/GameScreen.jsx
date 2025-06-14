@@ -1139,7 +1139,7 @@ const GameScreen = ({ playerData, returnToHome }) => {
         hygiene: Math.max(0, prev.hygiene - 25),
         money: prev.money,
       }));
-    }, 30000);
+    }, 60000);
 
     return () => clearInterval(statusTimer);
   }, [isGameFrozen]); // Add isGameFrozen to the dependency array
