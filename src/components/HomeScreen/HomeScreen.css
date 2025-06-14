@@ -32,7 +32,7 @@ input#player-name {
   height: 40px;
   font-size: 16px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 75px;
   border: 2px solid rgba(255, 255, 255, 0.2); /* Tambahkan border transparan */
   background: rgba(255, 255, 255, 0.1); /* Tambahkan background transparan */
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Tambahkan efek box-shadow */
