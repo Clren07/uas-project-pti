@@ -8,6 +8,13 @@ const FinalScore = ({
   itemsExchangedCount,
   visitedLocationsCount,
 }) => {
+  
+  const hunger     = Number(finalScore.hunger)    || 0;
+  const energy     = Number(finalScore.energy)    || 0;
+  const happiness  = Number(finalScore.happiness) || 0;
+  const hygiene    = Number(finalScore.hygiene)   || 0;
+  const money      = Number(finalScore.money)     || 0;
+
   // Calculate the total score
   const totalStats =
     finalScore.hunger + finalScore.energy + finalScore.happiness + finalScore.hygiene;
